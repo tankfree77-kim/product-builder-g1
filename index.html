@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOVICARE - Smart Ear Tag for Cattle</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-cow"></i> BOVICARE
+        </div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#company" class="nav-anchor">About</a></li>
+            <li><a href="#products" class="nav-anchor">Products</a></li>
+            <li><a href="#support" class="nav-anchor">Support</a></li>
+            <li><a href="#esg" class="nav-anchor">ESG</a></li>
+            <li><button class="btn-login" id="loginBtn"><i class="fa-solid fa-right-to-bracket"></i> Ranch Login</button></li>
+        </ul>
+        <button class="nav-toggle" id="navToggle"><i class="fa-solid fa-bars"></i></button>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero">
+        <div class="hero-overlay"></div>
+
+        <div class="hero-flex-wrap">
+
+            <!-- ── Left: Text Content ── -->
+            <div class="hero-content">
+                <span class="badge"><i class="fa-solid fa-signal"></i> Next-Gen IoT Livestock Management</span>
+                <h1>Smarter Herds.<br><span class="highlight">Better Outcomes.</span></h1>
+                <p>귀에 달린 스마트 태그 하나로 소의 건강·위치·발정을 24시간 실시간 모니터링.<br>전 세계 30개국 목장이 신뢰하는 IoT 플랫폼.</p>
+                <div class="hero-cta">
+                    <button class="btn-primary btn-large" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+                        <i class="fa-solid fa-rocket"></i> Explore Products
+                    </button>
+                    <button class="btn-ghost btn-large" id="heroLoginBtn">
+                        <i class="fa-solid fa-right-to-bracket"></i> Ranch Login
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── Right: Animated IoT Diagram ── -->
+            <div class="hero-iot-panel">
+                <div class="iot-card">
+                    <!-- Header bar -->
+                    <div class="iot-card-header">
+                        <span class="iot-live-dot"></span>
+                        <span>LIVE &nbsp;·&nbsp; BOVICARE EAR TAG NETWORK</span>
+                        <span class="iot-time" id="iotTime">00:00:00</span>
+                    </div>
+
+                    <!-- Row 1: Cows in pasture -->
+                    <div class="iot-field-row">
+                        <!-- Cow 1: Normal -->
+                        <div class="iot-cow" data-status="normal">
+                            <div class="iot-cow-body">
+                                <svg class="cow-svg" viewBox="0 0 60 48" xmlns="http://www.w3.org/2000/svg">
+                                    <!-- Body -->
+                                    <ellipse cx="30" cy="30" rx="22" ry="13" fill="#c8a96e"/>
+                                    <!-- Head -->
+                                    <ellipse cx="50" cy="24" rx="10" ry="8" fill="#c8a96e"/>
+                                    <!-- Horns -->
+                                    <path d="M54 16 Q58 10 56 8" stroke="#a07840" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                    <path d="M46 16 Q42 10 44 8" stroke="#a07840" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                    <!-- Eye -->
+                                    <circle cx="53" cy="22" r="2" fill="#3d2b0d"/>
+                                    <!-- Nose -->
+                                    <ellipse cx="58" cy="27" rx="3" ry="2" fill="#b08050"/>
+                                    <!-- Legs -->
+                                    <rect x="14" y="40" width="5" height="8" rx="2" fill="#b8946a"/>
+                                    <rect x="22" y="40" width="5" height="8" rx="2" fill="#b8946a"/>
+                                    <rect x="31" y="40" width="5" height="8" rx="2" fill="#b8946a"/>
+                                    <rect x="39" y="40" width="5" height="8" rx="2" fill="#b8946a"/>
+                                    <!-- Tail -->
+                                    <path d="M8 28 Q2 20 5 14" stroke="#a07840" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                                    <!-- Ear Tag: green (normal) -->
+                                    <rect x="43" y="13" width="7" height="5" rx="1.5" fill="#10b981"/>
+                                    <text x="44.5" y="17.5" font-size="3.5" fill="white" font-family="monospace" font-weight="bold">BVC</text>
+                                </svg>
+                            </div>
+                            <div class="iot-signal-wrap">
+                                <div class="iot-signal-ring r1 normal-ring"></div>
+                                <div class="iot-signal-ring r2 normal-ring" style="animation-delay:.4s"></div>
+                                <div class="iot-signal-ring r3 normal-ring" style="animation-delay:.8s"></div>
+                            </div>
+                            <div class="iot-status-label normal-lbl">Normal</div>
+                        </div>
+
+                        <!-- Cow 2: Heat -->
+                        <div class="iot-cow" data-status="heat">
+                            <div class="iot-cow-body">
+                                <svg class="cow-svg" viewBox="0 0 60 48" xmlns="http://www.w3.org/2000/svg">
+                                    <ellipse cx="30" cy="30" rx="22" ry="13" fill="#d4956a"/>
+                                    <ellipse cx="50" cy="24" rx="10" ry="8" fill="#d4956a"/>
+                                    <path d="M54 16 Q58 10 56 8" stroke="#a05a30" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                    <path d="M46 16 Q42 10 44 8" stroke="#a05a30" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                    <circle cx="53" cy="22" r="2" fill="#3d2b0d"/>
+                                    <ellipse cx="58" cy="27" rx="3" ry="2" fill="#b07045"/>
+                                    <rect x="14" y="40" width="5" height="8" rx="2" fill="#c47855"/>
+                                    <rect x="22" y="40" width="5" height="8" rx="2" fill="#c47855"/>
+                                    <rect x="31" y="40" width="5" height="8" rx="2" fill="#c47855"/>
+                                    <rect x="39" y="40" width="5" height="8" rx="2" fill="#c47855"/>
+                                    <path d="M8 28 Q2 20 5 14" stroke="#a05a30" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                                    <!-- Ear Tag: orange (heat) -->
+                                    <rect x="43" y="13" width="7" height="5" rx="1.5" fill="#f59e0b"/>
+                                    <text x="44.5" y="17.5" font-size="3.5" fill="white" font-family="monospace" font-weight="bold">BVC</text>
+                                </svg>
+                            </div>
+                            <div class="iot-signal-wrap">
+                                <div class="iot-signal-ring r1 heat-ring"></div>
+                                <div class="iot-signal-ring r2 heat-ring" style="animation-delay:.35s"></div>
+                                <div class="iot-signal-ring r3 heat-ring" style="animation-delay:.7s"></div>
+                            </div>
+                            <div class="iot-status-label heat-lbl">Heat</div>
+                        </div>
+
+                        <!-- Cow 3: Urgent -->
+                        <div class="iot-cow" data-status="urgent">
+                            <div class="iot-cow-body">
+                                <svg class="cow-svg" viewBox="0 0 60 48" xmlns="http://www.w3.org/2000/svg">
+                                    <ellipse cx="30" cy="30" rx="22" ry="13" fill="#b5b5b5"/>
+                                    <ellipse cx="50" cy="24" rx="10" ry="8" fill="#b5b5b5"/>
+                                    <path d="M54 16 Q58 10 56 8" stroke="#888" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                    <path d="M46 16 Q42 10 44 8" stroke="#888" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                    <circle cx="53" cy="22" r="2" fill="#3d2b0d"/>
+                                    <ellipse cx="58" cy="27" rx="3" ry="2" fill="#999"/>
+                                    <rect x="14" y="40" width="5" height="8" rx="2" fill="#aaa"/>
+                                    <rect x="22" y="40" width="5" height="8" rx="2" fill="#aaa"/>
+                                    <rect x="31" y="40" width="5" height="8" rx="2" fill="#aaa"/>
+                                    <rect x="39" y="40" width="5" height="8" rx="2" fill="#aaa"/>
+                                    <path d="M8 28 Q2 20 5 14" stroke="#888" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                                    <!-- Ear Tag: red (urgent) -->
+                                    <rect x="43" y="13" width="7" height="5" rx="1.5" fill="#ef4444"/>
+                                    <text x="44.5" y="17.5" font-size="3.5" fill="white" font-family="monospace" font-weight="bold">BVC</text>
+                                </svg>
+                            </div>
+                            <div class="iot-signal-wrap urgent-blink">
+                                <div class="iot-signal-ring r1 urgent-ring"></div>
+                                <div class="iot-signal-ring r2 urgent-ring" style="animation-delay:.25s"></div>
+                                <div class="iot-signal-ring r3 urgent-ring" style="animation-delay:.5s"></div>
+                            </div>
+                            <div class="iot-status-label urgent-lbl">Urgent!</div>
+                        </div>
+
+                        <!-- Cow 4: Normal (black/white Holstein) -->
+                        <div class="iot-cow" data-status="normal">
+                            <div class="iot-cow-body">
+                                <svg class="cow-svg" viewBox="0 0 60 48" xmlns="http://www.w3.org/2000/svg">
+                                    <ellipse cx="30" cy="30" rx="22" ry="13" fill="#f0f0f0"/>
+                                    <!-- Holstein spots -->
+                                    <ellipse cx="25" cy="28" rx="8" ry="6" fill="#333"/>
+                                    <ellipse cx="36" cy="34" rx="5" ry="4" fill="#333"/>
+                                    <ellipse cx="50" cy="24" rx="10" ry="8" fill="#f0f0f0"/>
+                                    <ellipse cx="51" cy="25" rx="4" ry="3" fill="#333"/>
+                                    <path d="M54 16 Q58 10 56 8" stroke="#555" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                    <path d="M46 16 Q42 10 44 8" stroke="#555" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                    <circle cx="53" cy="22" r="2" fill="#1a1a1a"/>
+                                    <ellipse cx="58" cy="27" rx="3" ry="2" fill="#e0c0c0"/>
+                                    <rect x="14" y="40" width="5" height="8" rx="2" fill="#ccc"/>
+                                    <rect x="22" y="40" width="5" height="8" rx="2" fill="#ccc"/>
+                                    <rect x="31" y="40" width="5" height="8" rx="2" fill="#333"/>
+                                    <rect x="39" y="40" width="5" height="8" rx="2" fill="#333"/>
+                                    <path d="M8 28 Q2 20 5 14" stroke="#555" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                                    <!-- Ear Tag: green (normal) -->
+                                    <rect x="43" y="13" width="7" height="5" rx="1.5" fill="#10b981"/>
+                                    <text x="44.5" y="17.5" font-size="3.5" fill="white" font-family="monospace" font-weight="bold">BVC</text>
+                                </svg>
+                            </div>
+                            <div class="iot-signal-wrap">
+                                <div class="iot-signal-ring r1 normal-ring" style="animation-delay:.2s"></div>
+                                <div class="iot-signal-ring r2 normal-ring" style="animation-delay:.6s"></div>
+                                <div class="iot-signal-ring r3 normal-ring" style="animation-delay:1s"></div>
+                            </div>
+                            <div class="iot-status-label normal-lbl">Normal</div>
+                        </div>
+                    </div><!-- /iot-field-row -->
+
+                    <!-- Row 2: Converge arrows + Base Station -->
+                    <div class="iot-flow-row">
+                        <div class="iot-converge">
+                            <svg class="converge-svg" viewBox="0 0 340 40" xmlns="http://www.w3.org/2000/svg">
+                                <!-- 4 lines converging to center -->
+                                <line x1="40"  y1="2"  x2="170" y2="38" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="4 3"/>
+                                <line x1="113" y1="2"  x2="170" y2="38" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="4 3"/>
+                                <line x1="227" y1="2"  x2="170" y2="38" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="4 3"/>
+                                <line x1="300" y1="2"  x2="170" y2="38" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="4 3"/>
+                                <!-- Animated data dots -->
+                                <circle r="3" fill="#10b981" opacity="0.9">
+                                    <animateMotion dur="1.4s" repeatCount="indefinite" path="M40,2 L170,38"/>
+                                </circle>
+                                <circle r="3" fill="#f59e0b" opacity="0.9">
+                                    <animateMotion dur="1.2s" repeatCount="indefinite" begin="0.3s" path="M113,2 L170,38"/>
+                                </circle>
+                                <circle r="3" fill="#ef4444" opacity="0.9">
+                                    <animateMotion dur="0.9s" repeatCount="indefinite" path="M227,2 L170,38"/>
+                                </circle>
+                                <circle r="3" fill="#10b981" opacity="0.9">
+                                    <animateMotion dur="1.3s" repeatCount="indefinite" begin="0.5s" path="M300,2 L170,38"/>
+                                </circle>
+                            </svg>
+                        </div>
+                        <!-- Base Station Node -->
+                        <div class="iot-node-box station-box">
+                            <div class="iot-node-icon station-icon">
+                                <i class="fa-solid fa-tower-broadcast"></i>
+                            </div>
+                            <div class="iot-node-label">
+                                <strong>Base Station</strong>
+                                <span>2.4km 범위</span>
+                            </div>
+                            <div class="iot-node-dot green-dot"></div>
+                        </div>
+                    </div>
+
+                    <!-- Row 3: Base Station → Cloud arrow -->
+                    <div class="iot-vertical-flow">
+                        <svg class="vert-svg" viewBox="0 0 20 36" xmlns="http://www.w3.org/2000/svg">
+                            <line x1="10" y1="0" x2="10" y2="36" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-dasharray="4 3"/>
+                            <circle r="3" fill="white" opacity="0.8">
+                                <animateMotion dur="1s" repeatCount="indefinite" path="M10,0 L10,36"/>
+                            </circle>
+                        </svg>
+                    </div>
+
+                    <!-- Row 4: Cloud Node -->
+                    <div class="iot-node-box cloud-box">
+                        <div class="iot-node-icon cloud-icon">
+                            <i class="fa-solid fa-cloud"></i>
+                        </div>
+                        <div class="iot-node-label">
+                            <strong>Cloud AI Server</strong>
+                            <span>실시간 분석 중</span>
+                        </div>
+                        <div class="iot-node-dot blue-dot pulse-dot"></div>
+                    </div>
+
+                    <!-- Row 5: Cloud → Devices arrows -->
+                    <div class="iot-branch-flow">
+                        <svg class="branch-svg" viewBox="0 0 260 32" xmlns="http://www.w3.org/2000/svg">
+                            <line x1="130" y1="0" x2="60"  y2="32" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-dasharray="4 3"/>
+                            <line x1="130" y1="0" x2="200" y2="32" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-dasharray="4 3"/>
+                            <circle r="3" fill="white" opacity="0.8">
+                                <animateMotion dur="0.8s" repeatCount="indefinite" path="M130,0 L60,32"/>
+                            </circle>
+                            <circle r="3" fill="white" opacity="0.8">
+                                <animateMotion dur="0.8s" repeatCount="indefinite" begin="0.2s" path="M130,0 L200,32"/>
+                            </circle>
+                        </svg>
+                    </div>
+
+                    <!-- Row 6: Devices -->
+                    <div class="iot-devices-row">
+                        <!-- Phone -->
+                        <div class="iot-device-box phone-box">
+                            <div class="iot-device-icon">
+                                <svg viewBox="0 0 44 76" xmlns="http://www.w3.org/2000/svg" width="28">
+                                    <rect x="2" y="2" width="40" height="72" rx="7" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+                                    <rect x="8" y="10" width="28" height="44" rx="3" fill="rgba(255,255,255,0.1)"/>
+                                    <!-- Alert screen -->
+                                    <rect x="9" y="11" width="26" height="42" rx="2" fill="#1e293b"/>
+                                    <rect x="11" y="15" width="22" height="6" rx="2" fill="#ef4444"/>
+                                    <text x="22" y="20" text-anchor="middle" font-size="4" fill="white" font-weight="bold">URGENT</text>
+                                    <rect x="11" y="24" width="22" height="3" rx="1" fill="rgba(255,255,255,0.3)"/>
+                                    <rect x="11" y="29" width="16" height="3" rx="1" fill="rgba(255,255,255,0.2)"/>
+                                    <rect x="11" y="34" width="20" height="3" rx="1" fill="rgba(255,255,255,0.2)"/>
+                                    <circle cx="22" cy="67" r="4" fill="rgba(255,255,255,0.25)" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+                                </svg>
+                                <!-- Alert badge -->
+                                <div class="device-alert-badge urgent-badge">!</div>
+                            </div>
+                            <div class="device-label">
+                                <strong>Mobile</strong>
+                                <span>긴급 알림</span>
+                            </div>
+                        </div>
+
+                        <!-- Tablet -->
+                        <div class="iot-device-box tablet-box">
+                            <div class="iot-device-icon">
+                                <svg viewBox="0 0 68 88" xmlns="http://www.w3.org/2000/svg" width="36">
+                                    <rect x="2" y="2" width="64" height="84" rx="8" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+                                    <rect x="8" y="8" width="52" height="66" rx="4" fill="#1e293b"/>
+                                    <!-- App screen mockup -->
+                                    <rect x="10" y="10" width="48" height="10" rx="2" fill="#0D8ABC"/>
+                                    <text x="34" y="17" text-anchor="middle" font-size="4.5" fill="white" font-weight="bold">BOVICARE</text>
+                                    <!-- Stat bars -->
+                                    <rect x="11" y="24" width="14" height="12" rx="2" fill="#10b981" opacity="0.8"/>
+                                    <rect x="27" y="24" width="14" height="12" rx="2" fill="#3b82f6" opacity="0.8"/>
+                                    <rect x="43" y="24" width="14" height="12" rx="2" fill="#f59e0b" opacity="0.8"/>
+                                    <text x="18" y="32" text-anchor="middle" font-size="4" fill="white">82</text>
+                                    <text x="34" y="32" text-anchor="middle" font-size="4" fill="white">25</text>
+                                    <text x="50" y="32" text-anchor="middle" font-size="4" fill="white">8</text>
+                                    <!-- Map area -->
+                                    <rect x="11" y="39" width="46" height="28" rx="2" fill="#0f172a"/>
+                                    <ellipse cx="34" cy="53" rx="14" ry="9" fill="none" stroke="#0D8ABC" stroke-width="1" stroke-dasharray="2 2"/>
+                                    <!-- Cow dots on map -->
+                                    <circle cx="28" cy="50" r="2" fill="#10b981"/>
+                                    <circle cx="34" cy="48" r="2" fill="#10b981"/>
+                                    <circle cx="40" cy="52" r="2" fill="#f59e0b"/>
+                                    <circle cx="32" cy="56" r="2.5" fill="#ef4444"/>
+                                    <circle cx="38" cy="57" r="2" fill="#10b981"/>
+                                    <circle cx="36" cy="44" r="2" fill="#10b981"/>
+                                    <circle cx="82" cy="80" r="5" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+                                </svg>
+                                <!-- Notification badge -->
+                                <div class="device-alert-badge info-badge">3</div>
+                            </div>
+                            <div class="device-label">
+                                <strong>Tablet</strong>
+                                <span>대시보드</span>
+                            </div>
+                        </div>
+                    </div><!-- /iot-devices-row -->
+
+                </div><!-- /iot-card -->
+            </div><!-- /hero-iot-panel -->
+
+        </div><!-- /hero-flex-wrap -->
+
+        <div class="hero-scroll-hint">
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
+    </header>
+
+    <!-- Global Stats Ticker -->
+    <section class="stats-ticker">
+        <div class="ticker-inner">
+            <div class="ticker-item" data-target="500000">
+                <h2 class="counter-num" id="c1">0</h2>
+                <p>Active EAR TAGs</p>
+            </div>
+            <div class="ticker-divider"></div>
+            <div class="ticker-item" data-target="3200">
+                <h2 class="counter-num" id="c2">0</h2>
+                <p>Partner Ranches</p>
+            </div>
+            <div class="ticker-divider"></div>
+            <div class="ticker-item" data-target="32">
+                <h2 class="counter-num" id="c3">0</h2>
+                <p>Countries Served</p>
+            </div>
+            <div class="ticker-divider"></div>
+            <div class="ticker-item" data-target="99">
+                <h2 class="counter-num" id="c4">0</h2>
+                <p>% Detection Accuracy</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Company Section -->
+    <section id="company" class="section">
+        <div class="container">
+            <div class="section-label">About BOVICARE</div>
+            <h2 class="section-title">글로벌 스마트 축산의 리더</h2>
+            <div class="two-col">
+                <div class="text-content">
+                    <h3 class="grad-text">최첨단 IoT 기술로<br>목장을 혁신합니다</h3>
+                    <p>BOVICARE는 최첨단 IoT 통신 기술과 AI 데이터 분석을 기반으로 전 세계 목장의 생산성 향상과 동물 복지를 위해 앞장서고 있습니다. 귀에 부착하는 작은 태그 하나가 24시간 실시간 건강 모니터링 시스템의 핵심이 됩니다.</p>
+                    <p>검증된 센서 데이터로 질병 발생을 사전에 예방하고 적절한 발정기를 포착하여 수익을 극대화하세요. CowManager, Allflex, SCR Dairy에 이어 아시아 최초로 자체 개발한 스마트 이어태그 플랫폼입니다.</p>
+                    <ul class="feature-list">
+                        <li><i class="fa-solid fa-check-circle text-green"></i> 정확도 99% 이상의 활동량 · 반추 모니터링</li>
+                        <li><i class="fa-solid fa-check-circle text-green"></i> 최대 5년 배터리 수명 (교체 주기 최소화)</li>
+                        <li><i class="fa-solid fa-check-circle text-green"></i> IP68 방수/방진 산업용 등급</li>
+                        <li><i class="fa-solid fa-check-circle text-green"></i> LTE-M / LoRaWAN / BLE 다중 통신 지원</li>
+                    </ul>
+                </div>
+                <div class="image-content bg-placeholder1">
+                    <div class="image-badge-overlay">
+                        <div class="img-badge"><i class="fa-solid fa-award"></i> ISO 9001 Certified</div>
+                        <div class="img-badge secondary"><i class="fa-solid fa-globe"></i> 30+ Countries</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="section bg-light">
+        <div class="container">
+            <div class="section-label">Our Products</div>
+            <h2 class="section-title">주요 제품 라인업</h2>
+            <div class="grid-3">
+                <div class="card product-card">
+                    <div class="card-icon-wrapper product-1">
+                        <i class="fa-solid fa-microchip card-icon"></i>
+                    </div>
+                    <span class="product-tag">Best Seller</span>
+                    <h3>Smart Ear Tag Pro</h3>
+                    <p>체온 변화, 반추 시간, 활동량, 실시간 GPS 위치를 24시간 측정. 질병과 발정을 조기 발견하는 핵심 IoT 디바이스.</p>
+                    <ul class="card-feature-list">
+                        <li><i class="fa-solid fa-bolt"></i> BLE 5.0 + GPS</li>
+                        <li><i class="fa-solid fa-battery-full"></i> 5년 배터리</li>
+                        <li><i class="fa-solid fa-droplet"></i> IP68 방수</li>
+                    </ul>
+                </div>
+                <div class="card product-card featured">
+                    <div class="card-icon-wrapper product-2">
+                        <i class="fa-solid fa-satellite-dish card-icon"></i>
+                    </div>
+                    <span class="product-tag new">New</span>
+                    <h3>Base Station v3</h3>
+                    <p>광활한 방목장에서도 끊김 없는 데이터 수집. 반경 2km 강력 송수신, 태양광 자가발전 지원 허브 스테이션.</p>
+                    <ul class="card-feature-list">
+                        <li><i class="fa-solid fa-solar-panel"></i> 태양광 발전</li>
+                        <li><i class="fa-solid fa-wifi"></i> 반경 2km</li>
+                        <li><i class="fa-solid fa-cloud"></i> 클라우드 연동</li>
+                    </ul>
+                </div>
+                <div class="card product-card">
+                    <div class="card-icon-wrapper product-3">
+                        <i class="fa-solid fa-chart-line card-icon"></i>
+                    </div>
+                    <span class="product-tag">Platform</span>
+                    <h3>Farm Dashboard</h3>
+                    <p>PC와 모바일 앱에서 한눈에 파악하는 전체 목장 현황. 직관적 UI로 긴급 알림과 발정 타이밍을 절대 놓치지 마세요.</p>
+                    <ul class="card-feature-list">
+                        <li><i class="fa-solid fa-map-location-dot"></i> 실시간 위치 추적</li>
+                        <li><i class="fa-solid fa-bell"></i> 즉시 알림</li>
+                        <li><i class="fa-solid fa-file-export"></i> 데이터 내보내기</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section how-it-works">
+        <div class="container">
+            <div class="section-label">How It Works</div>
+            <h2 class="section-title">간단한 4단계로 시작하세요</h2>
+            <div class="steps-grid">
+                <div class="step-item">
+                    <div class="step-num">01</div>
+                    <div class="step-icon"><i class="fa-solid fa-tag"></i></div>
+                    <h4>태그 부착</h4>
+                    <p>소의 귀에 Smart Ear Tag Pro를 부착하기만 하면 즉시 데이터 수집을 시작합니다.</p>
+                </div>
+                <div class="step-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                <div class="step-item">
+                    <div class="step-num">02</div>
+                    <div class="step-icon"><i class="fa-solid fa-tower-broadcast"></i></div>
+                    <h4>데이터 수집</h4>
+                    <p>Base Station이 태그 신호를 포착하여 클라우드 서버로 실시간 전송합니다.</p>
+                </div>
+                <div class="step-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                <div class="step-item">
+                    <div class="step-num">03</div>
+                    <div class="step-icon"><i class="fa-solid fa-brain"></i></div>
+                    <h4>AI 분석</h4>
+                    <p>머신러닝 엔진이 이상 패턴을 탐지하고 발정 · 질병 · 이탈을 예측합니다.</p>
+                </div>
+                <div class="step-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                <div class="step-item">
+                    <div class="step-num">04</div>
+                    <div class="step-icon"><i class="fa-solid fa-bell"></i></div>
+                    <h4>즉시 알림</h4>
+                    <p>앱 푸시, SMS, 이메일로 중요 알림을 즉시 수신하고 신속히 대응하세요.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support Section -->
+    <section id="support" class="section bg-light">
+        <div class="container">
+            <div class="section-label">Customer Support</div>
+            <h2 class="section-title">고객 지원 서비스</h2>
+            <div class="support-grid">
+                <div class="support-item">
+                    <div class="support-icon-wrap">
+                        <i class="fa-solid fa-headset support-icon"></i>
+                    </div>
+                    <h4>24/7 기술 지원</h4>
+                    <p>1588-BOVI · 연중무휴 원격 기술 지원 센터 운영. 야간 긴급 상황도 완벽 대비합니다.</p>
+                </div>
+                <div class="support-item">
+                    <div class="support-icon-wrap">
+                        <i class="fa-solid fa-book-open-reader support-icon"></i>
+                    </div>
+                    <h4>설치 가이드 & 매뉴얼</h4>
+                    <p>설치부터 데이터 연동까지 단계별 동영상 튜토리얼과 상세 PDF 문서를 제공합니다.</p>
+                </div>
+                <div class="support-item">
+                    <div class="support-icon-wrap">
+                        <i class="fa-solid fa-screwdriver-wrench support-icon"></i>
+                    </div>
+                    <h4>신속한 A/S 보증</h4>
+                    <p>기기 불량 확인 시 즉각 맞교환 진행. 3년 무상 보증으로 모니터링 공백을 최소화합니다.</p>
+                </div>
+                <div class="support-item">
+                    <div class="support-icon-wrap">
+                        <i class="fa-solid fa-graduation-cap support-icon"></i>
+                    </div>
+                    <h4>전문가 온보딩 교육</h4>
+                    <p>목장 방문 설치 교육 및 원격 화상 세션을 통해 빠른 시스템 안착을 지원합니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ESG Section -->
+    <section id="esg" class="section">
+        <div class="container">
+            <div class="section-label">ESG Commitment</div>
+            <h2 class="section-title">ESG 경영</h2>
+            <div class="two-col reverse">
+                <div class="text-content">
+                    <h3 class="grad-text">지속 가능한<br>친환경 스마트 축산</h3>
+                    <p>BOVICARE는 사업 전반에 걸쳐 환경 보호, 동물 복지, 투명한 지배구조를 최우선 가치로 실천합니다.</p>
+                    <div class="esg-item">
+                        <div class="esg-icon esg-e"><i class="fa-solid fa-leaf"></i></div>
+                        <div>
+                            <strong>Environmental — 친환경 재질</strong>
+                            <p>모든 이어태그 외부 케이스는 무독성 · 재활용 가능한 생분해성 바이오 플라스틱을 사용하며, 2025년까지 탄소 중립을 목표로 합니다.</p>
+                        </div>
+                    </div>
+                    <div class="esg-item">
+                        <div class="esg-icon esg-s"><i class="fa-solid fa-heart-pulse"></i></div>
+                        <div>
+                            <strong>Social — 동물 복지 & 방역</strong>
+                            <p>선제적 질병 탐지로 항생제 투여량을 평균 35% 낮추고, 가축의 고통을 최소화하며 안전한 먹거리 생산에 기여합니다.</p>
+                        </div>
+                    </div>
+                    <div class="esg-item">
+                        <div class="esg-icon esg-g"><i class="fa-solid fa-solar-panel"></i></div>
+                        <div>
+                            <strong>Governance — 탄소 저감</strong>
+                            <p>야외 설치용 Base Station은 100% 태양광 패널 구동을 지원. 공급망 전체의 탄소 발자국 공시를 의무화하고 있습니다.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="image-content bg-placeholder2"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="section bg-light testimonials-section">
+        <div class="container">
+            <div class="section-label">Customer Stories</div>
+            <h2 class="section-title">전 세계 목장의 신뢰</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p>"BOVICARE 도입 후 발정 탐지율이 92%까지 올랐고, 첫 해에만 수정 비용을 40% 절감했습니다."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">KF</div>
+                        <div>
+                            <strong>김민준</strong>
+                            <span>경북 한우농장 · 320두 규모</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p>"The geofence alert system saved two of my heifers last winter. The real-time location is absolutely invaluable."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">JR</div>
+                        <div>
+                            <strong>James Robertson</strong>
+                            <span>Montana Hereford Ranch · USA</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p>"Onze veestapel van 800 koeien is nu volledig gedigitaliseerd. De gezondheidsalerts zijn ongelooflijk nauwkeurig."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">HD</div>
+                        <div>
+                            <strong>Hans de Vries</strong>
+                            <span>Groningen Dairy Farm · Netherlands</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partner Logos -->
+    <section class="partners-section">
+        <div class="container">
+            <p class="partners-label">전 세계 파트너 기관과 함께합니다</p>
+            <div class="partners-row">
+                <div class="partner-logo">농촌진흥청</div>
+                <div class="partner-logo">한국농어촌공사</div>
+                <div class="partner-logo">CJ Feed &amp; Care</div>
+                <div class="partner-logo">Elanco Animal Health</div>
+                <div class="partner-logo">Zoetis Korea</div>
+                <div class="partner-logo">농협경제지주</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeLogin">&times;</span>
+            <div class="modal-header">
+                <div class="modal-logo"><i class="fa-solid fa-cow"></i></div>
+                <h2>Ranch Login</h2>
+                <p>BOVICARE 스마트 대시보드 접속</p>
+            </div>
+            <div class="demo-hint">
+                <i class="fa-solid fa-circle-info"></i>
+                <span>데모: 목장명 <strong>HappyCow</strong> · 비밀번호 <strong>bovi2024</strong></span>
+            </div>
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="ranchName"><i class="fa-solid fa-house-chimney"></i> 목장 (RANCH) 이름</label>
+                    <div class="input-icon-wrap">
+                        <i class="fa-solid fa-house-chimney flag-icon"></i>
+                        <input type="text" id="ranchName" placeholder="예: HappyCow Ranch" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="password"><i class="fa-solid fa-lock"></i> 비밀번호</label>
+                    <div class="input-icon-wrap">
+                        <i class="fa-solid fa-lock flag-icon"></i>
+                        <input type="password" id="password" placeholder="비밀번호 입력" required>
+                        <button type="button" class="toggle-pw" id="togglePw"><i class="fa-solid fa-eye"></i></button>
+                    </div>
+                </div>
+                <div id="loginError" class="login-error" style="display:none;">
+                    <i class="fa-solid fa-exclamation-circle"></i> 목장명 또는 비밀번호가 올바르지 않습니다.
+                </div>
+                <button type="submit" class="btn-primary w-100 btn-login-submit">
+                    대시보드 접속 <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+            <p class="modal-footer-note">계정이 없으신가요? <a href="#">영업팀 문의하기</a></p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo"><i class="fa-solid fa-cow"></i> BOVICARE</div>
+                    <p>스마트 이어태그(Smart Ear Tag) 기술로 전 세계 목장의 미래를 혁신합니다. 소의 건강과 농가의 수익, 두 가지를 동시에.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h5>제품</h5>
+                    <ul>
+                        <li><a href="#">Smart Ear Tag Pro</a></li>
+                        <li><a href="#">Base Station v3</a></li>
+                        <li><a href="#">Farm Dashboard</a></li>
+                        <li><a href="#">API &amp; 연동 가이드</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>회사</h5>
+                    <ul>
+                        <li><a href="#">회사 소개</a></li>
+                        <li><a href="#">ESG 경영</a></li>
+                        <li><a href="#">채용 정보</a></li>
+                        <li><a href="#">뉴스룸</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>고객지원</h5>
+                    <ul>
+                        <li><a href="#">1588-BOVI</a></li>
+                        <li><a href="#">사용자 가이드</a></li>
+                        <li><a href="#">A/S 신청</a></li>
+                        <li><a href="#">파트너 신청</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 BOVICARE Inc. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#">개인정보 처리방침</a>
+                    <a href="#">이용약관</a>
+                    <a href="#">쿠키 정책</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
