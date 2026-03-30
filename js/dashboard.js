@@ -461,12 +461,18 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ── Sidebar Navigation ─────────────────── */
     const mainContent = document.querySelector('.main-content');
 
+    /* Directly calculate offset within .main-content and set scrollTop */
     function scrollToSection(sectionId) {
         const target = document.getElementById(sectionId);
         if (!target || !mainContent) return;
-        // scrollIntoView on the element works within the scrollable parent
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const containerTop = mainContent.getBoundingClientRect().top;
+        const targetTop    = target.getBoundingClientRect().top;
+        const offset       = mainContent.scrollTop + (targetTop - containerTop) - 16;
+        mainContent.scrollTo({ top: offset, behavior: 'smooth' });
     }
+
+    /* Track whether a click-scroll is in progress to avoid IO overriding active state */
+    let navClickPending = false;
 
     function setActiveNav(sectionId) {
         document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
@@ -479,14 +485,17 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const sectionId = link.dataset.section;
             setActiveNav(sectionId);
+            navClickPending = true;
             scrollToSection(sectionId);
+            setTimeout(() => { navClickPending = false; }, 800);
         });
     });
 
     /* IntersectionObserver — auto-highlight active nav on scroll */
     const sectionIds = ['summary-section','map-section','table-section','alerts-section','reports-section','settings-section','users-section'];
-    const ioOptions = { root: mainContent, threshold: 0.25 };
+    const ioOptions  = { root: mainContent, rootMargin: '0px 0px -60% 0px', threshold: 0 };
     const io = new IntersectionObserver(entries => {
+        if (navClickPending) return;
         entries.forEach(entry => {
             if (entry.isIntersecting) setActiveNav(entry.target.id);
         });
