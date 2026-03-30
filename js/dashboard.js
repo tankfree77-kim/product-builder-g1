@@ -458,6 +458,182 @@ document.addEventListener('DOMContentLoaded', () => {
     closeDetail?.addEventListener('click', () => detailModal.classList.remove('show'));
     window.addEventListener('click', (e) => { if (e.target === detailModal) detailModal.classList.remove('show'); });
 
+    /* ── Sidebar Navigation ─────────────────── */
+    const mainContent = document.querySelector('.main-content');
+
+    function scrollToSection(sectionId) {
+        const target = document.getElementById(sectionId);
+        if (!target || !mainContent) return;
+        // scrollIntoView on the element works within the scrollable parent
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function setActiveNav(sectionId) {
+        document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
+        const link = document.querySelector(`.sidebar-menu a[data-section="${sectionId}"]`);
+        if (link) link.closest('li').classList.add('active');
+    }
+
+    document.querySelectorAll('.sidebar-menu a[data-section]').forEach(link => {
+        link.addEventListener('click', e => {
+            e.preventDefault();
+            const sectionId = link.dataset.section;
+            setActiveNav(sectionId);
+            scrollToSection(sectionId);
+        });
+    });
+
+    /* IntersectionObserver — auto-highlight active nav on scroll */
+    const sectionIds = ['summary-section','map-section','table-section','alerts-section','reports-section','settings-section','users-section'];
+    const ioOptions = { root: mainContent, threshold: 0.25 };
+    const io = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) setActiveNav(entry.target.id);
+        });
+    }, ioOptions);
+    sectionIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) io.observe(el);
+    });
+
+    /* ── Alerts Section ─────────────────────── */
+    const urgentCows = cowsData.filter(c => c.status === 'Urgent');
+    const heatCows   = cowsData.filter(c => c.status === 'Heat');
+    const allAlerts  = [...urgentCows, ...heatCows];
+
+    document.getElementById('alertCount').textContent = `총 ${allAlerts.length}건`;
+
+    function buildAlertRows(list) {
+        const tbody = document.getElementById('alertTableBody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        if (list.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:2rem;color:#9ca3af;">
+                <i class="fa-solid fa-circle-check" style="color:#10b981;margin-right:0.5rem;"></i>이상 알림이 없습니다.</td></tr>`;
+            return;
+        }
+        const now = new Date();
+        list.forEach((cow, idx) => {
+            const isUrgent = cow.status === 'Urgent';
+            const badgeClass = isUrgent ? 'badge-urgent' : 'badge-heat';
+            const icon  = isUrgent ? '<i class="fa-solid fa-triangle-exclamation"></i>' : '<i class="fa-solid fa-fire"></i>';
+            const label = isUrgent ? '긴급' : '발정 의심';
+            // Fake timestamp: spread alerts within last 24 hours
+            const minsAgo = Math.floor(Math.random() * 1440);
+            const t = new Date(now - minsAgo * 60000);
+            const timeStr = t.toLocaleTimeString('ko-KR', { hour:'2-digit', minute:'2-digit' }) +
+                            ' ' + t.toLocaleDateString('ko-KR', { month:'2-digit', day:'2-digit' });
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><span class="badge-status ${badgeClass}">${icon} ${label}</span></td>
+                <td style="font-family:monospace;font-size:0.82rem;">${cow.id}</td>
+                <td style="font-weight:600;">${cow.name}</td>
+                <td>${cow.breed}</td>
+                <td class="${cow.temp > 39.2 ? 'temp-high' : 'temp-normal'} temp-cell">${cow.temp}°C</td>
+                <td>${cow.typeLabel} · ${cow.gender}</td>
+                <td class="text-gray" style="font-size:0.82rem;">${timeStr}</td>
+                <td class="text-gray" style="font-size:0.82rem;font-family:monospace;">${cow.lat.toFixed(4)}, ${cow.lng.toFixed(4)}</td>`;
+            tbody.appendChild(tr);
+        });
+    }
+    buildAlertRows(allAlerts);
+
+    document.getElementById('btnClearAlerts')?.addEventListener('click', () => {
+        buildAlertRows([]);
+        document.getElementById('alertCount').textContent = '총 0건';
+        showToast('알림 내역이 삭제되었습니다.', 'success');
+    });
+
+    /* ── Reports Section ─────────────────────── */
+    function buildBar(label, value, total, color) {
+        const pct = total > 0 ? Math.round(value / total * 100) : 0;
+        return `<div class="bar-row">
+            <span class="bar-label">${label}</span>
+            <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color};"></div></div>
+            <span class="bar-count">${value}</span>
+        </div>`;
+    }
+
+    // Status chart
+    const sNormal = cowsData.filter(c => c.status === 'Normal').length;
+    const sHeat   = cowsData.filter(c => c.status === 'Heat').length;
+    const sUrgent = cowsData.filter(c => c.status === 'Urgent').length;
+    document.getElementById('chartStatus').innerHTML =
+        buildBar('정상 (Normal)', sNormal, TOTAL, '#10b981') +
+        buildBar('발정 (Heat)',   sHeat,   TOTAL, '#f59e0b') +
+        buildBar('긴급 (Urgent)', sUrgent, TOTAL, '#ef4444');
+
+    // Type chart
+    document.getElementById('chartType').innerHTML =
+        buildBar('숫소 (Bull)',   stats.Bull,  TOTAL, '#0284c7') +
+        buildBar('암소 (Cow)',    stats.Cow,   TOTAL, '#db2777') +
+        buildBar('송아지 (Calf)', stats.Calf,  TOTAL, '#d97706') +
+        buildBar('거세소 (Steer)',stats.Steer, TOTAL, '#7c3aed');
+
+    // Breed chart
+    const breedCount = {};
+    cowsData.forEach(c => { breedCount[c.breed] = (breedCount[c.breed] || 0) + 1; });
+    const breedColors = ['#0D8ABC','#10b981','#f59e0b','#ef4444','#7c3aed','#64748b'];
+    document.getElementById('chartBreed').innerHTML =
+        Object.entries(breedCount)
+            .sort((a,b) => b[1]-a[1])
+            .map(([breed, cnt], i) => buildBar(breed, cnt, TOTAL, breedColors[i % breedColors.length]))
+            .join('');
+
+    // Temp chart
+    const tempBuckets = { '37~38°C': 0, '38~39°C': 0, '39~40°C': 0, '40°C+': 0 };
+    cowsData.forEach(c => {
+        if (c.temp < 38)      tempBuckets['37~38°C']++;
+        else if (c.temp < 39) tempBuckets['38~39°C']++;
+        else if (c.temp < 40) tempBuckets['39~40°C']++;
+        else                  tempBuckets['40°C+']++;
+    });
+    const tempColors = ['#10b981','#10b981','#f59e0b','#ef4444'];
+    document.getElementById('chartTemp').innerHTML =
+        Object.entries(tempBuckets)
+            .map(([label, cnt], i) => buildBar(label, cnt, TOTAL, tempColors[i]))
+            .join('');
+
+    const reportRanchName = localStorage.getItem('bovicare_ranch_name') || 'HappyCow Ranch';
+    const rEl = document.getElementById('reportRanchName');
+    if (rEl) rEl.textContent = reportRanchName + ' · ' + new Date().toLocaleDateString('ko-KR');
+
+    /* ── Settings Section ───────────────────── */
+    const syncEl = document.getElementById('lastSync');
+    if (syncEl) syncEl.textContent = new Date().toLocaleString('ko-KR');
+
+    /* ── Users Section ──────────────────────── */
+    const usersData = [
+        { name: '김민준', role: '목장주', email: 'mj.kim@happycow.kr',    last: '방금 전',    active: true  },
+        { name: '이수진', role: '수의사',  email: 'sj.lee@happycow.kr',    last: '1시간 전',   active: true  },
+        { name: '박철수', role: '현장관리', email: 'cs.park@happycow.kr',   last: '어제',       active: true  },
+        { name: 'Admin', role: '시스템관리자', email: 'admin@bovicare.io', last: '방금 전',    active: true  },
+        { name: '최영희', role: '직원',    email: 'yh.choi@happycow.kr',   last: '3일 전',     active: false },
+    ];
+    const utbody = document.getElementById('usersTableBody');
+    if (utbody) {
+        utbody.innerHTML = usersData.map(u => `
+            <tr>
+                <td>
+                    <div style="display:flex;align-items:center;gap:0.75rem;">
+                        <div style="width:36px;height:36px;border-radius:50%;background:var(--primary);
+                            color:white;display:flex;align-items:center;justify-content:center;
+                            font-weight:700;font-size:0.85rem;flex-shrink:0;">${u.name[0]}</div>
+                        <strong>${u.name}</strong>
+                    </div>
+                </td>
+                <td><span class="breed-badge">${u.role}</span></td>
+                <td class="text-gray" style="font-size:0.875rem;">${u.email}</td>
+                <td class="text-gray" style="font-size:0.875rem;">${u.last}</td>
+                <td><span class="status-pill ${u.active ? 'green' : ''}" style="${!u.active?'background:#f3f4f6;color:#9ca3af;':''}">${u.active ? '활성' : '비활성'}</span></td>
+                <td>
+                    <button class="btn-outline btn-sm" onclick="showToastGlobal('사용자 편집 기능은 준비 중입니다.','info')">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                </td>
+            </tr>`).join('');
+    }
+
     /* ── CSV Export ─────────────────────────── */
     document.getElementById('btnExportCSV').addEventListener('click', () => {
         const headers = ['Status','Tag ID','MAC','Name','Breed','Type','Gender','Age(mo)','Temp(°C)','Lat','Lng'];
@@ -474,6 +650,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* ── Toast Notification ─────────────────── */
+    window.showToastGlobal = function(message, type) { showToast(message, type); };
     function showToast(message, type = 'info') {
         const existing = document.querySelector('.toast-msg');
         existing?.remove();

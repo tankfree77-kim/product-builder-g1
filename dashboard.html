@@ -20,16 +20,16 @@
         <nav>
             <p class="sidebar-section-label" data-i18n="dash.menu.main">MAIN MENU</p>
             <ul class="sidebar-menu">
-                <li class="active"><a href="#"><i class="fa-solid fa-house"></i> <span data-i18n="dash.nav.dashboard">대시보드 요약</span></a></li>
-                <li><a href="#map-section"><i class="fa-solid fa-map-location-dot"></i> <span data-i18n="dash.nav.map">목장 지도 (Geofence)</span></a></li>
-                <li><a href="#table-section"><i class="fa-solid fa-list"></i> <span data-i18n="dash.nav.list">개체 상태 목록</span></a></li>
-                <li><a href="#"><i class="fa-solid fa-bell"></i> <span data-i18n="dash.nav.alerts">이상 알림 내역</span></a></li>
-                <li><a href="#"><i class="fa-solid fa-chart-pie"></i> <span data-i18n="dash.nav.reports">통계 리포트</span></a></li>
+                <li class="active"><a href="#" data-section="summary-section"><i class="fa-solid fa-house"></i> <span data-i18n="dash.nav.dashboard">대시보드 요약</span></a></li>
+                <li><a href="#" data-section="map-section"><i class="fa-solid fa-map-location-dot"></i> <span data-i18n="dash.nav.map">목장 지도 (Geofence)</span></a></li>
+                <li><a href="#" data-section="table-section"><i class="fa-solid fa-list"></i> <span data-i18n="dash.nav.list">개체 상태 목록</span></a></li>
+                <li><a href="#" data-section="alerts-section"><i class="fa-solid fa-bell"></i> <span data-i18n="dash.nav.alerts">이상 알림 내역</span></a></li>
+                <li><a href="#" data-section="reports-section"><i class="fa-solid fa-chart-pie"></i> <span data-i18n="dash.nav.reports">통계 리포트</span></a></li>
             </ul>
             <p class="sidebar-section-label" data-i18n="dash.menu.settings">SETTINGS</p>
             <ul class="sidebar-menu">
-                <li><a href="#"><i class="fa-solid fa-gear"></i> <span data-i18n="dash.nav.system">시스템 설정</span></a></li>
-                <li><a href="#"><i class="fa-solid fa-users"></i> <span data-i18n="dash.nav.users">사용자 관리</span></a></li>
+                <li><a href="#" data-section="settings-section"><i class="fa-solid fa-gear"></i> <span data-i18n="dash.nav.system">시스템 설정</span></a></li>
+                <li><a href="#" data-section="users-section"><i class="fa-solid fa-users"></i> <span data-i18n="dash.nav.users">사용자 관리</span></a></li>
             </ul>
         </nav>
         <div class="sidebar-bottom">
@@ -83,8 +83,8 @@
             <button class="alert-close" onclick="document.getElementById('alertBanner').style.display='none'">&times;</button>
         </div>
 
-        <!-- Stats Grid -->
-        <section class="stats-grid">
+        <!-- Stats Grid (Summary anchor) -->
+        <section class="stats-grid" id="summary-section">
             <div class="stat-card">
                 <div class="stat-icon bulls"><i class="fa-solid fa-mars"></i></div>
                 <div class="stat-info">
@@ -242,6 +242,129 @@
                     </thead>
                     <tbody id="cowTableBody">
                     </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ════ Alerts Section ════ -->
+        <section id="alerts-section" class="panel table-panel">
+            <div class="panel-header">
+                <h2><i class="fa-solid fa-bell text-primary"></i> <span data-i18n="dash.nav.alerts">이상 알림 내역</span></h2>
+                <div class="table-actions">
+                    <span class="text-sm text-gray" id="alertCount"></span>
+                    <button class="btn-outline btn-sm" id="btnClearAlerts">
+                        <i class="fa-solid fa-trash-can"></i> 전체 삭제
+                    </button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>수준</th>
+                            <th>Tag ID</th>
+                            <th>이름</th>
+                            <th>품종</th>
+                            <th>체온</th>
+                            <th>상태</th>
+                            <th>발생 시각</th>
+                            <th>위치</th>
+                        </tr>
+                    </thead>
+                    <tbody id="alertTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ════ Reports Section ════ -->
+        <section id="reports-section" class="panel" style="padding:1.5rem;">
+            <div class="panel-header" style="border:none;padding:0 0 1.25rem 0;">
+                <h2><i class="fa-solid fa-chart-pie text-primary"></i> <span data-i18n="dash.nav.reports">통계 리포트</span></h2>
+                <span class="text-sm text-gray" id="reportRanchName"></span>
+            </div>
+            <!-- Row 1: status + type bars -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+                <div class="report-card">
+                    <h4 class="report-card-title"><i class="fa-solid fa-heart-pulse"></i> 건강 상태 분포</h4>
+                    <div id="chartStatus"></div>
+                </div>
+                <div class="report-card">
+                    <h4 class="report-card-title"><i class="fa-solid fa-tag"></i> 개체 종류 분포</h4>
+                    <div id="chartType"></div>
+                </div>
+            </div>
+            <!-- Row 2: breed + temp -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+                <div class="report-card">
+                    <h4 class="report-card-title"><i class="fa-solid fa-dna"></i> 품종 분포</h4>
+                    <div id="chartBreed"></div>
+                </div>
+                <div class="report-card">
+                    <h4 class="report-card-title"><i class="fa-solid fa-thermometer-half"></i> 평균 체온 현황</h4>
+                    <div id="chartTemp"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ════ Settings Section ════ -->
+        <section id="settings-section" class="panel" style="padding:2rem;">
+            <div class="panel-header" style="border:none;padding:0 0 1.5rem 0;">
+                <h2><i class="fa-solid fa-gear text-primary"></i> <span data-i18n="dash.nav.system">시스템 설정</span></h2>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+                <div class="settings-card">
+                    <h4><i class="fa-solid fa-tower-broadcast"></i> Base Station 설정</h4>
+                    <div class="settings-row"><label>신호 수집 주기</label><select><option>10초</option><option>30초</option><option>1분</option><option>5분</option></select></div>
+                    <div class="settings-row"><label>커버리지 반경</label><select><option>1km</option><option selected>2km</option><option>3km</option></select></div>
+                    <div class="settings-row"><label>LTE-M 연결</label><span class="status-pill green">연결됨</span></div>
+                    <div class="settings-row"><label>LoRaWAN 연결</label><span class="status-pill green">연결됨</span></div>
+                </div>
+                <div class="settings-card">
+                    <h4><i class="fa-solid fa-bell"></i> 알림 설정</h4>
+                    <div class="settings-row"><label>긴급 알림 SMS</label><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                    <div class="settings-row"><label>발정 알림 앱 Push</label><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                    <div class="settings-row"><label>이탈 알림 이메일</label><label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+                    <div class="settings-row"><label>체온 임계값</label><select><option>39.0°C</option><option selected>39.2°C</option><option>39.5°C</option></select></div>
+                </div>
+                <div class="settings-card">
+                    <h4><i class="fa-solid fa-cloud"></i> 클라우드 & 데이터</h4>
+                    <div class="settings-row"><label>데이터 저장 기간</label><select><option>6개월</option><option selected>1년</option><option>3년</option></select></div>
+                    <div class="settings-row"><label>자동 백업</label><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                    <div class="settings-row"><label>API 연동</label><span class="status-pill green">활성화</span></div>
+                    <div class="settings-row"><label>마지막 동기화</label><span class="text-sm text-gray" id="lastSync">—</span></div>
+                </div>
+                <div class="settings-card">
+                    <h4><i class="fa-solid fa-shield-halved"></i> 보안 설정</h4>
+                    <div class="settings-row"><label>2단계 인증</label><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                    <div class="settings-row"><label>세션 자동 로그아웃</label><select><option>30분</option><option selected>1시간</option><option>4시간</option></select></div>
+                    <div class="settings-row"><label>IP 화이트리스트</label><label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+                    <div class="settings-row"><label>감사 로그</label><span class="status-pill blue">기록 중</span></div>
+                </div>
+            </div>
+            <div style="margin-top:1.5rem;display:flex;gap:0.75rem;">
+                <button class="btn-primary" onclick="showToastGlobal('설정이 저장되었습니다.','success')"><i class="fa-solid fa-floppy-disk"></i> 설정 저장</button>
+                <button class="btn-outline" onclick="showToastGlobal('설정이 초기화되었습니다.','info')"><i class="fa-solid fa-rotate-left"></i> 기본값 복원</button>
+            </div>
+        </section>
+
+        <!-- ════ Users Section ════ -->
+        <section id="users-section" class="panel table-panel">
+            <div class="panel-header">
+                <h2><i class="fa-solid fa-users text-primary"></i> <span data-i18n="dash.nav.users">사용자 관리</span></h2>
+                <div class="table-actions">
+                    <button class="btn-primary btn-sm" onclick="showToastGlobal('사용자 추가 기능은 준비 중입니다.','info')">
+                        <i class="fa-solid fa-user-plus"></i> 사용자 추가
+                    </button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>이름</th><th>역할</th><th>이메일</th><th>마지막 접속</th><th>상태</th><th>관리</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody"></tbody>
                 </table>
             </div>
         </section>
