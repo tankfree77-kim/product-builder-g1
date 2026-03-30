@@ -107,7 +107,7 @@ section .section-label { display: block; text-align: center; }
     display: flex; align-items: center; justify-content: center;
     position: relative; padding: 7rem 0 4rem;
     background:
-        url('https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=1600&q=80')
+        url('https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=1600&q=80')
         center 60% / cover no-repeat;
 }
 .hero-overlay {
