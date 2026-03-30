@@ -15,11 +15,25 @@
             <img src="bovicare-logo.png" alt="BOVICARE" style="height:108px; vertical-align:middle;">
         </div>
         <ul class="nav-links" id="navLinks">
-            <li><a href="#company" class="nav-anchor">About</a></li>
-            <li><a href="#products" class="nav-anchor">Products</a></li>
-            <li><a href="#support" class="nav-anchor">Support</a></li>
-            <li><a href="#esg" class="nav-anchor">ESG</a></li>
-            <li><button class="btn-login" id="loginBtn"><i class="fa-solid fa-right-to-bracket"></i> Ranch Login</button></li>
+            <li><a href="#company" class="nav-anchor" data-i18n="nav.about">회사소개</a></li>
+            <li><a href="#products" class="nav-anchor" data-i18n="nav.products">제품</a></li>
+            <li><a href="#support" class="nav-anchor" data-i18n="nav.support">지원</a></li>
+            <li><a href="#esg" class="nav-anchor" data-i18n="nav.esg">ESG</a></li>
+            <!-- Language Selector -->
+            <li class="lang-selector">
+                <button class="lang-toggle-btn" id="langToggleBtn" aria-label="Language">
+                    <span id="currentLangFlag">🇰🇷</span>
+                    <span id="currentLangLabel">한국어</span>
+                    <i class="fa-solid fa-chevron-down lang-chevron"></i>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <button class="lang-btn active" data-lang="ko">🇰🇷 한국어</button>
+                    <button class="lang-btn" data-lang="en">🇺🇸 English</button>
+                    <button class="lang-btn" data-lang="es">🇪🇸 Español</button>
+                    <button class="lang-btn" data-lang="ja">🇯🇵 日本語</button>
+                </div>
+            </li>
+            <li><button class="btn-login" id="loginBtn"><i class="fa-solid fa-right-to-bracket"></i> <span data-i18n="nav.login">목장 로그인</span></button></li>
         </ul>
         <button class="nav-toggle" id="navToggle"><i class="fa-solid fa-bars"></i></button>
     </nav>
@@ -32,12 +46,12 @@
 
             <!-- ── Left: Text Content ── -->
             <div class="hero-content">
-                <span class="badge"><i class="fa-solid fa-signal"></i> Next-Gen IoT Livestock Management</span>
-                <h1>Smarter Herds.<br><span class="highlight">Better Outcomes.</span></h1>
-                <p>귀에 달린 스마트 태그 하나로 소의 건강·위치·발정을 24시간 실시간 모니터링.<br>전 세계 30개국 목장이 신뢰하는 IoT 플랫폼.</p>
+                <span class="badge" data-i18n="hero.badge"><i class="fa-solid fa-signal"></i> 차세대 IoT 가축 관리 플랫폼</span>
+                <h1 data-i18n="hero.h1">더 스마트한 소떼.<br><span class="highlight">더 나은 결과.</span></h1>
+                <p data-i18n="hero.p">귀에 달린 스마트 태그 하나로 소의 건강·위치·발정을 24시간 실시간 모니터링.<br>전 세계 30개국 목장이 신뢰하는 IoT 플랫폼.</p>
                 <div class="hero-cta">
-                    <button class="btn-primary btn-large" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
-                        <i class="fa-solid fa-rocket"></i> Explore Products
+                    <button class="btn-primary btn-large" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})" data-i18n="hero.btn">
+                        <i class="fa-solid fa-rocket"></i> 제품 살펴보기
                     </button>
                 </div>
             </div>
@@ -48,7 +62,7 @@
                     <!-- Header bar -->
                     <div class="iot-card-header">
                         <span class="iot-live-dot"></span>
-                        <span>LIVE &nbsp;·&nbsp; BOVICARE EAR TAG NETWORK</span>
+                        <span data-i18n="hero.iot.live">LIVE &nbsp;·&nbsp; BOVICARE 이어태그 네트워크</span>
                         <span class="iot-time" id="iotTime">00:00:00</span>
                     </div>
 
@@ -70,22 +84,22 @@
         <div class="ticker-inner">
             <div class="ticker-item" data-target="500000">
                 <h2 class="counter-num" id="c1">0</h2>
-                <p>Active EAR TAGs</p>
+                <p data-i18n="stats.tags">활성 이어태그</p>
             </div>
             <div class="ticker-divider"></div>
             <div class="ticker-item" data-target="3200">
                 <h2 class="counter-num" id="c2">0</h2>
-                <p>Partner Ranches</p>
+                <p data-i18n="stats.ranches">파트너 목장</p>
             </div>
             <div class="ticker-divider"></div>
             <div class="ticker-item" data-target="32">
                 <h2 class="counter-num" id="c3">0</h2>
-                <p>Countries Served</p>
+                <p data-i18n="stats.countries">서비스 국가</p>
             </div>
             <div class="ticker-divider"></div>
             <div class="ticker-item" data-target="99">
                 <h2 class="counter-num" id="c4">0</h2>
-                <p>% Detection Accuracy</p>
+                <p data-i18n="stats.accuracy">% 탐지 정확도</p>
             </div>
         </div>
     </section>
@@ -93,18 +107,18 @@
     <!-- Company Section -->
     <section id="company" class="section">
         <div class="container">
-            <div class="section-label">About BOVICARE</div>
-            <h2 class="section-title">글로벌 스마트 축산의 리더</h2>
+            <div class="section-label" data-i18n="company.label">BOVICARE 소개</div>
+            <h2 class="section-title" data-i18n="company.title">글로벌 스마트 축산의 리더</h2>
             <div class="two-col">
                 <div class="text-content">
-                    <h3 class="grad-text">최첨단 IoT 기술로<br>목장을 혁신합니다</h3>
-                    <p>BOVICARE는 최첨단 IoT 통신 기술과 AI 데이터 분석을 기반으로 전 세계 목장의 생산성 향상과 동물 복지를 위해 앞장서고 있습니다. 귀에 부착하는 작은 태그 하나가 24시간 실시간 건강 모니터링 시스템의 핵심이 됩니다.</p>
-                    <p>검증된 센서 데이터로 질병 발생을 사전에 예방하고 적절한 발정기를 포착하여 수익을 극대화하세요. CowManager, Allflex, SCR Dairy에 이어 아시아 최초로 자체 개발한 스마트 이어태그 플랫폼입니다.</p>
+                    <h3 class="grad-text" data-i18n="company.h3">최첨단 IoT 기술로<br>목장을 혁신합니다</h3>
+                    <p data-i18n="company.p1">BOVICARE는 최첨단 IoT 통신 기술과 AI 데이터 분석을 기반으로 전 세계 목장의 생산성 향상과 동물 복지를 위해 앞장서고 있습니다. 귀에 부착하는 작은 태그 하나가 24시간 실시간 건강 모니터링 시스템의 핵심이 됩니다.</p>
+                    <p data-i18n="company.p2">검증된 센서 데이터로 질병 발생을 사전에 예방하고 적절한 발정기를 포착하여 수익을 극대화하세요. CowManager, Allflex, SCR Dairy에 이어 아시아 최초로 자체 개발한 스마트 이어태그 플랫폼입니다.</p>
                     <ul class="feature-list">
-                        <li><i class="fa-solid fa-check-circle text-green"></i> 정확도 99% 이상의 활동량 · 반추 모니터링</li>
-                        <li><i class="fa-solid fa-check-circle text-green"></i> 최대 5년 배터리 수명 (교체 주기 최소화)</li>
-                        <li><i class="fa-solid fa-check-circle text-green"></i> IP68 방수/방진 산업용 등급</li>
-                        <li><i class="fa-solid fa-check-circle text-green"></i> LTE-M / LoRaWAN / BLE 다중 통신 지원</li>
+                        <li><i class="fa-solid fa-check-circle text-green"></i> <span data-i18n="company.f1">정확도 99% 이상의 활동량 · 반추 모니터링</span></li>
+                        <li><i class="fa-solid fa-check-circle text-green"></i> <span data-i18n="company.f2">최대 5년 배터리 수명 (교체 주기 최소화)</span></li>
+                        <li><i class="fa-solid fa-check-circle text-green"></i> <span data-i18n="company.f3">IP68 방수/방진 산업용 등급</span></li>
+                        <li><i class="fa-solid fa-check-circle text-green"></i> <span data-i18n="company.f4">LTE-M / LoRaWAN / BLE 다중 통신 지원</span></li>
                     </ul>
                 </div>
                 <div class="image-content bg-placeholder1">
@@ -120,8 +134,8 @@
     <!-- Products Section -->
     <section id="products" class="section bg-light">
         <div class="container">
-            <div class="section-label">Our Products</div>
-            <h2 class="section-title">주요 제품 라인업</h2>
+            <div class="section-label" data-i18n="products.label">주요 제품</div>
+            <h2 class="section-title" data-i18n="products.title">주요 제품 라인업</h2>
             <div class="grid-3">
                 <div class="card product-card">
                     <div class="card-icon-wrapper product-1">
@@ -129,11 +143,11 @@
                     </div>
                     <span class="product-tag">Best Seller</span>
                     <h3>Smart Ear Tag Pro</h3>
-                    <p>체온 변화, 반추 시간, 활동량, 실시간 GPS 위치를 24시간 측정. 질병과 발정을 조기 발견하는 핵심 IoT 디바이스.</p>
+                    <p data-i18n="p1.desc">체온 변화, 반추 시간, 활동량, 실시간 GPS 위치를 24시간 측정. 질병과 발정을 조기 발견하는 핵심 IoT 디바이스.</p>
                     <ul class="card-feature-list">
-                        <li><i class="fa-solid fa-bolt"></i> BLE 5.0 + GPS</li>
-                        <li><i class="fa-solid fa-battery-full"></i> 5년 배터리</li>
-                        <li><i class="fa-solid fa-droplet"></i> IP68 방수</li>
+                        <li><i class="fa-solid fa-bolt"></i> <span data-i18n="p1.f1">BLE 5.0 + GPS</span></li>
+                        <li><i class="fa-solid fa-battery-full"></i> <span data-i18n="p1.f2">5년 배터리</span></li>
+                        <li><i class="fa-solid fa-droplet"></i> <span data-i18n="p1.f3">IP68 방수</span></li>
                     </ul>
                 </div>
                 <div class="card product-card featured">
@@ -142,11 +156,11 @@
                     </div>
                     <span class="product-tag new">New</span>
                     <h3>Base Station v3</h3>
-                    <p>광활한 방목장에서도 끊김 없는 데이터 수집. 반경 2km 강력 송수신, 태양광 자가발전 지원 허브 스테이션.</p>
+                    <p data-i18n="p2.desc">광활한 방목장에서도 끊김 없는 데이터 수집. 반경 2km 강력 송수신, 태양광 자가발전 지원 허브 스테이션.</p>
                     <ul class="card-feature-list">
-                        <li><i class="fa-solid fa-solar-panel"></i> 태양광 발전</li>
-                        <li><i class="fa-solid fa-wifi"></i> 반경 2km</li>
-                        <li><i class="fa-solid fa-cloud"></i> 클라우드 연동</li>
+                        <li><i class="fa-solid fa-solar-panel"></i> <span data-i18n="p2.f1">태양광 발전</span></li>
+                        <li><i class="fa-solid fa-wifi"></i> <span data-i18n="p2.f2">반경 2km</span></li>
+                        <li><i class="fa-solid fa-cloud"></i> <span data-i18n="p2.f3">클라우드 연동</span></li>
                     </ul>
                 </div>
                 <div class="card product-card">
@@ -155,11 +169,11 @@
                     </div>
                     <span class="product-tag">Platform</span>
                     <h3>Farm Dashboard</h3>
-                    <p>PC와 모바일 앱에서 한눈에 파악하는 전체 목장 현황. 직관적 UI로 긴급 알림과 발정 타이밍을 절대 놓치지 마세요.</p>
+                    <p data-i18n="p3.desc">PC와 모바일 앱에서 한눈에 파악하는 전체 목장 현황. 직관적 UI로 긴급 알림과 발정 타이밍을 절대 놓치지 마세요.</p>
                     <ul class="card-feature-list">
-                        <li><i class="fa-solid fa-map-location-dot"></i> 실시간 위치 추적</li>
-                        <li><i class="fa-solid fa-bell"></i> 즉시 알림</li>
-                        <li><i class="fa-solid fa-file-export"></i> 데이터 내보내기</li>
+                        <li><i class="fa-solid fa-map-location-dot"></i> <span data-i18n="p3.f1">실시간 위치 추적</span></li>
+                        <li><i class="fa-solid fa-bell"></i> <span data-i18n="p3.f2">즉시 알림</span></li>
+                        <li><i class="fa-solid fa-file-export"></i> <span data-i18n="p3.f3">데이터 내보내기</span></li>
                     </ul>
                 </div>
             </div>
@@ -169,35 +183,35 @@
     <!-- How It Works -->
     <section class="section how-it-works">
         <div class="container">
-            <div class="section-label">How It Works</div>
-            <h2 class="section-title">간단한 4단계로 시작하세요</h2>
+            <div class="section-label" data-i18n="how.label">이용 방법</div>
+            <h2 class="section-title" data-i18n="how.title">간단한 4단계로 시작하세요</h2>
             <div class="steps-grid">
                 <div class="step-item">
                     <div class="step-num">01</div>
                     <div class="step-icon"><i class="fa-solid fa-tag"></i></div>
-                    <h4>태그 부착</h4>
-                    <p>소의 귀에 Smart Ear Tag Pro를 부착하기만 하면 즉시 데이터 수집을 시작합니다.</p>
+                    <h4 data-i18n="step1.title">태그 부착</h4>
+                    <p data-i18n="step1.desc">소의 귀에 Smart Ear Tag Pro를 부착하기만 하면 즉시 데이터 수집을 시작합니다.</p>
                 </div>
                 <div class="step-arrow"><i class="fa-solid fa-arrow-right"></i></div>
                 <div class="step-item">
                     <div class="step-num">02</div>
                     <div class="step-icon"><i class="fa-solid fa-tower-broadcast"></i></div>
-                    <h4>데이터 수집</h4>
-                    <p>Base Station이 태그 신호를 포착하여 클라우드 서버로 실시간 전송합니다.</p>
+                    <h4 data-i18n="step2.title">데이터 수집</h4>
+                    <p data-i18n="step2.desc">Base Station이 태그 신호를 포착하여 클라우드 서버로 실시간 전송합니다.</p>
                 </div>
                 <div class="step-arrow"><i class="fa-solid fa-arrow-right"></i></div>
                 <div class="step-item">
                     <div class="step-num">03</div>
                     <div class="step-icon"><i class="fa-solid fa-brain"></i></div>
-                    <h4>AI 분석</h4>
-                    <p>머신러닝 엔진이 이상 패턴을 탐지하고 발정 · 질병 · 이탈을 예측합니다.</p>
+                    <h4 data-i18n="step3.title">AI 분석</h4>
+                    <p data-i18n="step3.desc">머신러닝 엔진이 이상 패턴을 탐지하고 발정 · 질병 · 이탈을 예측합니다.</p>
                 </div>
                 <div class="step-arrow"><i class="fa-solid fa-arrow-right"></i></div>
                 <div class="step-item">
                     <div class="step-num">04</div>
                     <div class="step-icon"><i class="fa-solid fa-bell"></i></div>
-                    <h4>즉시 알림</h4>
-                    <p>앱 푸시, SMS, 이메일로 중요 알림을 즉시 수신하고 신속히 대응하세요.</p>
+                    <h4 data-i18n="step4.title">즉시 알림</h4>
+                    <p data-i18n="step4.desc">앱 푸시, SMS, 이메일로 중요 알림을 즉시 수신하고 신속히 대응하세요.</p>
                 </div>
             </div>
         </div>
@@ -206,36 +220,36 @@
     <!-- Support Section -->
     <section id="support" class="section bg-light">
         <div class="container">
-            <div class="section-label">Customer Support</div>
-            <h2 class="section-title">고객 지원 서비스</h2>
+            <div class="section-label" data-i18n="support.label">고객 지원</div>
+            <h2 class="section-title" data-i18n="support.title">고객 지원 서비스</h2>
             <div class="support-grid">
                 <div class="support-item">
                     <div class="support-icon-wrap">
                         <i class="fa-solid fa-headset support-icon"></i>
                     </div>
-                    <h4>24/7 기술 지원</h4>
-                    <p>1588-BOVI · 연중무휴 원격 기술 지원 센터 운영. 야간 긴급 상황도 완벽 대비합니다.</p>
+                    <h4 data-i18n="s1.title">24/7 기술 지원</h4>
+                    <p data-i18n="s1.desc">1588-BOVI · 연중무휴 원격 기술 지원 센터 운영. 야간 긴급 상황도 완벽 대비합니다.</p>
                 </div>
                 <div class="support-item">
                     <div class="support-icon-wrap">
                         <i class="fa-solid fa-book-open-reader support-icon"></i>
                     </div>
-                    <h4>설치 가이드 & 매뉴얼</h4>
-                    <p>설치부터 데이터 연동까지 단계별 동영상 튜토리얼과 상세 PDF 문서를 제공합니다.</p>
+                    <h4 data-i18n="s2.title">설치 가이드 &amp; 매뉴얼</h4>
+                    <p data-i18n="s2.desc">설치부터 데이터 연동까지 단계별 동영상 튜토리얼과 상세 PDF 문서를 제공합니다.</p>
                 </div>
                 <div class="support-item">
                     <div class="support-icon-wrap">
                         <i class="fa-solid fa-screwdriver-wrench support-icon"></i>
                     </div>
-                    <h4>신속한 A/S 보증</h4>
-                    <p>기기 불량 확인 시 즉각 맞교환 진행. 3년 무상 보증으로 모니터링 공백을 최소화합니다.</p>
+                    <h4 data-i18n="s3.title">신속한 A/S 보증</h4>
+                    <p data-i18n="s3.desc">기기 불량 확인 시 즉각 맞교환 진행. 3년 무상 보증으로 모니터링 공백을 최소화합니다.</p>
                 </div>
                 <div class="support-item">
                     <div class="support-icon-wrap">
                         <i class="fa-solid fa-graduation-cap support-icon"></i>
                     </div>
-                    <h4>전문가 온보딩 교육</h4>
-                    <p>목장 방문 설치 교육 및 원격 화상 세션을 통해 빠른 시스템 안착을 지원합니다.</p>
+                    <h4 data-i18n="s4.title">전문가 온보딩 교육</h4>
+                    <p data-i18n="s4.desc">목장 방문 설치 교육 및 원격 화상 세션을 통해 빠른 시스템 안착을 지원합니다.</p>
                 </div>
             </div>
         </div>
@@ -244,31 +258,31 @@
     <!-- ESG Section -->
     <section id="esg" class="section">
         <div class="container">
-            <div class="section-label">ESG Commitment</div>
-            <h2 class="section-title">ESG 경영</h2>
+            <div class="section-label" data-i18n="esg.label">ESG 경영</div>
+            <h2 class="section-title" data-i18n="esg.title">ESG 경영</h2>
             <div class="two-col reverse">
                 <div class="text-content">
-                    <h3 class="grad-text">지속 가능한<br>친환경 스마트 축산</h3>
-                    <p>BOVICARE는 사업 전반에 걸쳐 환경 보호, 동물 복지, 투명한 지배구조를 최우선 가치로 실천합니다.</p>
+                    <h3 class="grad-text" data-i18n="esg.h3">지속 가능한<br>친환경 스마트 축산</h3>
+                    <p data-i18n="esg.p">BOVICARE는 사업 전반에 걸쳐 환경 보호, 동물 복지, 투명한 지배구조를 최우선 가치로 실천합니다.</p>
                     <div class="esg-item">
                         <div class="esg-icon esg-e"><i class="fa-solid fa-leaf"></i></div>
                         <div>
-                            <strong>Environmental — 친환경 재질</strong>
-                            <p>모든 이어태그 외부 케이스는 무독성 · 재활용 가능한 생분해성 바이오 플라스틱을 사용하며, 2025년까지 탄소 중립을 목표로 합니다.</p>
+                            <strong data-i18n="esg.e.title">Environmental — 친환경 재질</strong>
+                            <p data-i18n="esg.e.desc">모든 이어태그 외부 케이스는 무독성 · 재활용 가능한 생분해성 바이오 플라스틱을 사용하며, 2025년까지 탄소 중립을 목표로 합니다.</p>
                         </div>
                     </div>
                     <div class="esg-item">
                         <div class="esg-icon esg-s"><i class="fa-solid fa-heart-pulse"></i></div>
                         <div>
-                            <strong>Social — 동물 복지 & 방역</strong>
-                            <p>선제적 질병 탐지로 항생제 투여량을 평균 35% 낮추고, 가축의 고통을 최소화하며 안전한 먹거리 생산에 기여합니다.</p>
+                            <strong data-i18n="esg.s.title">Social — 동물 복지 &amp; 방역</strong>
+                            <p data-i18n="esg.s.desc">선제적 질병 탐지로 항생제 투여량을 평균 35% 낮추고, 가축의 고통을 최소화하며 안전한 먹거리 생산에 기여합니다.</p>
                         </div>
                     </div>
                     <div class="esg-item">
                         <div class="esg-icon esg-g"><i class="fa-solid fa-solar-panel"></i></div>
                         <div>
-                            <strong>Governance — 탄소 저감</strong>
-                            <p>야외 설치용 Base Station은 100% 태양광 패널 구동을 지원. 공급망 전체의 탄소 발자국 공시를 의무화하고 있습니다.</p>
+                            <strong data-i18n="esg.g.title">Governance — 탄소 저감</strong>
+                            <p data-i18n="esg.g.desc">야외 설치용 Base Station은 100% 태양광 패널 구동을 지원. 공급망 전체의 탄소 발자국 공시를 의무화하고 있습니다.</p>
                         </div>
                     </div>
                 </div>
@@ -280,39 +294,39 @@
     <!-- Testimonials -->
     <section class="section bg-light testimonials-section">
         <div class="container">
-            <div class="section-label">Customer Stories</div>
-            <h2 class="section-title">전 세계 목장의 신뢰</h2>
+            <div class="section-label" data-i18n="testimonials.label">고객 사례</div>
+            <h2 class="section-title" data-i18n="testimonials.title">전 세계 목장의 신뢰</h2>
             <div class="testimonials-grid">
                 <div class="testimonial-card">
                     <div class="stars">★★★★★</div>
-                    <p>"BOVICARE 도입 후 발정 탐지율이 92%까지 올랐고, 첫 해에만 수정 비용을 40% 절감했습니다."</p>
+                    <p data-i18n="t1.text">"BOVICARE 도입 후 발정 탐지율이 92%까지 올랐고, 첫 해에만 수정 비용을 40% 절감했습니다."</p>
                     <div class="testimonial-author">
                         <div class="author-avatar">KF</div>
                         <div>
                             <strong>김민준</strong>
-                            <span>경북 한우농장 · 320두 규모</span>
+                            <span data-i18n="t1.role">경북 한우농장 · 320두 규모</span>
                         </div>
                     </div>
                 </div>
                 <div class="testimonial-card">
                     <div class="stars">★★★★★</div>
-                    <p>"The geofence alert system saved two of my heifers last winter. The real-time location is absolutely invaluable."</p>
+                    <p data-i18n="t2.text">"The geofence alert system saved two of my heifers last winter. The real-time location is absolutely invaluable."</p>
                     <div class="testimonial-author">
                         <div class="author-avatar">JR</div>
                         <div>
                             <strong>James Robertson</strong>
-                            <span>Montana Hereford Ranch · USA</span>
+                            <span data-i18n="t2.role">Montana Hereford Ranch · USA</span>
                         </div>
                     </div>
                 </div>
                 <div class="testimonial-card">
                     <div class="stars">★★★★★</div>
-                    <p>"Onze veestapel van 800 koeien is nu volledig gedigitaliseerd. De gezondheidsalerts zijn ongelooflijk nauwkeurig."</p>
+                    <p data-i18n="t3.text">"Onze veestapel van 800 koeien is nu volledig gedigitaliseerd. De gezondheidsalerts zijn ongelooflijk nauwkeurig."</p>
                     <div class="testimonial-author">
                         <div class="author-avatar">HD</div>
                         <div>
                             <strong>Hans de Vries</strong>
-                            <span>Groningen Dairy Farm · Netherlands</span>
+                            <span data-i18n="t3.role">Groningen Dairy Farm · Netherlands</span>
                         </div>
                     </div>
                 </div>
@@ -323,7 +337,7 @@
     <!-- Partner Logos -->
     <section class="partners-section">
         <div class="container">
-            <p class="partners-label">전 세계 파트너 기관과 함께합니다</p>
+            <p class="partners-label" data-i18n="partners.label">전 세계 파트너 기관과 함께합니다</p>
             <div class="partners-row">
                 <div class="partner-logo">농촌진흥청</div>
                 <div class="partner-logo">한국농어촌공사</div>
@@ -341,37 +355,37 @@
             <span class="close-btn" id="closeLogin">&times;</span>
             <div class="modal-header">
                 <div class="modal-logo"><i class="fa-solid fa-cow"></i></div>
-                <h2>Ranch Login</h2>
-                <p>BOVICARE 스마트 대시보드 접속</p>
+                <h2 data-i18n="modal.title">Ranch Login</h2>
+                <p data-i18n="modal.subtitle">BOVICARE 스마트 대시보드 접속</p>
             </div>
             <div class="demo-hint">
                 <i class="fa-solid fa-circle-info"></i>
-                <span>데모: 목장명 <strong>HappyCow</strong> · 비밀번호 <strong>bovi2024</strong></span>
+                <span data-i18n="modal.demo">데모: 목장명 <strong>HappyCow</strong> · 비밀번호 <strong>bovi2024</strong></span>
             </div>
             <form id="loginForm">
                 <div class="input-group">
-                    <label for="ranchName"><i class="fa-solid fa-house-chimney"></i> 목장 (RANCH) 이름</label>
+                    <label for="ranchName" data-i18n="modal.label1"><i class="fa-solid fa-house-chimney"></i> 목장 (RANCH) 이름</label>
                     <div class="input-icon-wrap">
                         <i class="fa-solid fa-house-chimney flag-icon"></i>
-                        <input type="text" id="ranchName" placeholder="예: HappyCow Ranch" required>
+                        <input type="text" id="ranchName" data-i18n-ph="modal.ph1" placeholder="예: HappyCow Ranch" required>
                     </div>
                 </div>
                 <div class="input-group">
-                    <label for="password"><i class="fa-solid fa-lock"></i> 비밀번호</label>
+                    <label for="password" data-i18n="modal.label2"><i class="fa-solid fa-lock"></i> 비밀번호</label>
                     <div class="input-icon-wrap">
                         <i class="fa-solid fa-lock flag-icon"></i>
-                        <input type="password" id="password" placeholder="비밀번호 입력" required>
+                        <input type="password" id="password" data-i18n-ph="modal.ph2" placeholder="비밀번호 입력" required>
                         <button type="button" class="toggle-pw" id="togglePw"><i class="fa-solid fa-eye"></i></button>
                     </div>
                 </div>
-                <div id="loginError" class="login-error" style="display:none;">
+                <div id="loginError" class="login-error" style="display:none;" data-i18n="modal.error">
                     <i class="fa-solid fa-exclamation-circle"></i> 목장명 또는 비밀번호가 올바르지 않습니다.
                 </div>
-                <button type="submit" class="btn-primary w-100 btn-login-submit">
+                <button type="submit" class="btn-primary w-100 btn-login-submit" data-i18n="modal.submit">
                     대시보드 접속 <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </form>
-            <p class="modal-footer-note">계정이 없으신가요? <a href="#">영업팀 문의하기</a></p>
+            <p class="modal-footer-note" data-i18n="modal.footer">계정이 없으신가요? <a href="#">영업팀 문의하기</a></p>
         </div>
     </div>
 
@@ -381,7 +395,7 @@
             <div class="footer-grid">
                 <div class="footer-brand">
                     <div class="footer-logo"><i class="fa-solid fa-cow"></i> BOVICARE</div>
-                    <p>스마트 이어태그(Smart Ear Tag) 기술로 전 세계 목장의 미래를 혁신합니다. 소의 건강과 농가의 수익, 두 가지를 동시에.</p>
+                    <p data-i18n="footer.tagline">스마트 이어태그(Smart Ear Tag) 기술로 전 세계 목장의 미래를 혁신합니다. 소의 건강과 농가의 수익, 두 가지를 동시에.</p>
                     <div class="footer-social">
                         <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
                         <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
@@ -390,44 +404,45 @@
                     </div>
                 </div>
                 <div class="footer-col">
-                    <h5>제품</h5>
+                    <h5 data-i18n="footer.products">제품</h5>
                     <ul>
                         <li><a href="#">Smart Ear Tag Pro</a></li>
                         <li><a href="#">Base Station v3</a></li>
                         <li><a href="#">Farm Dashboard</a></li>
-                        <li><a href="#">API &amp; 연동 가이드</a></li>
+                        <li><a href="#" data-i18n="footer.fp4">API &amp; 연동 가이드</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
-                    <h5>회사</h5>
+                    <h5 data-i18n="footer.company">회사</h5>
                     <ul>
-                        <li><a href="#">회사 소개</a></li>
-                        <li><a href="#">ESG 경영</a></li>
-                        <li><a href="#">채용 정보</a></li>
-                        <li><a href="#">뉴스룸</a></li>
+                        <li><a href="#" data-i18n="footer.fc1">회사 소개</a></li>
+                        <li><a href="#" data-i18n="footer.fc2">ESG 경영</a></li>
+                        <li><a href="#" data-i18n="footer.fc3">채용 정보</a></li>
+                        <li><a href="#" data-i18n="footer.fc4">뉴스룸</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
-                    <h5>고객지원</h5>
+                    <h5 data-i18n="footer.support">고객지원</h5>
                     <ul>
-                        <li><a href="#">1588-BOVI</a></li>
-                        <li><a href="#">사용자 가이드</a></li>
-                        <li><a href="#">A/S 신청</a></li>
-                        <li><a href="#">파트너 신청</a></li>
+                        <li><a href="#" data-i18n="footer.fs1">1588-BOVI</a></li>
+                        <li><a href="#" data-i18n="footer.fs2">사용자 가이드</a></li>
+                        <li><a href="#" data-i18n="footer.fs3">A/S 신청</a></li>
+                        <li><a href="#" data-i18n="footer.fs4">파트너 신청</a></li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 BOVICARE Inc. All rights reserved.</p>
+                <p data-i18n="footer.copy">&copy; 2024 BOVICARE Inc. All rights reserved.</p>
                 <div class="footer-links">
-                    <a href="#">개인정보 처리방침</a>
-                    <a href="#">이용약관</a>
-                    <a href="#">쿠키 정책</a>
+                    <a href="#" data-i18n="footer.privacy">개인정보 처리방침</a>
+                    <a href="#" data-i18n="footer.terms">이용약관</a>
+                    <a href="#" data-i18n="footer.cookies">쿠키 정책</a>
                 </div>
             </div>
         </div>
     </footer>
 
+    <script src="js/i18n.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

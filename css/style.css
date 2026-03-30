@@ -101,6 +101,51 @@ section .section-label { display: block; text-align: center; }
 .btn-login:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: var(--shadow-md); }
 .nav-toggle { display: none; background: none; border: none; font-size: 1.25rem; color: var(--gray-900); cursor: pointer; }
 
+/* ── Language Selector ──────────────────── */
+.lang-selector { position: relative; }
+.lang-toggle-btn {
+    background: none; border: 1.5px solid rgba(6,95,70,0.25); border-radius: 999px;
+    padding: 0.42rem 0.9rem; cursor: pointer; font-family: inherit; font-size: 0.85rem;
+    font-weight: 600; color: var(--gray-700); display: flex; align-items: center; gap: 0.35rem;
+    transition: all 0.2s; white-space: nowrap;
+}
+.lang-toggle-btn:hover { background: rgba(6,95,70,0.08); border-color: rgba(6,95,70,0.45); color: #065f46; }
+.lang-chevron { font-size: 0.65rem; transition: transform 0.2s; }
+.lang-dropdown.open + * { /* placeholder */ }
+.lang-toggle-btn:has(+ .lang-dropdown.open) .lang-chevron { transform: rotate(180deg); }
+.lang-dropdown {
+    position: absolute; top: calc(100% + 8px); left: 0;
+    background: white; border: 1px solid var(--gray-200);
+    border-radius: 12px; box-shadow: var(--shadow-lg);
+    padding: 0.4rem; min-width: 150px; z-index: 999;
+    opacity: 0; visibility: hidden; transform: translateY(-6px);
+    transition: all 0.2s ease;
+}
+.lang-dropdown.open {
+    opacity: 1; visibility: visible; transform: translateY(0);
+}
+.lang-dropdown.lang-dropdown-left { left: auto; right: 0; }
+.lang-btn {
+    display: flex; align-items: center; gap: 0.5rem;
+    width: 100%; padding: 0.55rem 0.85rem; border: none; background: none;
+    border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.875rem;
+    font-weight: 500; color: var(--gray-700); transition: all 0.15s; text-align: left;
+    white-space: nowrap;
+}
+.lang-btn:hover { background: var(--gray-100); color: #065f46; }
+.lang-btn.active { background: rgba(6,95,70,0.1); color: #065f46; font-weight: 700; }
+
+/* Dashboard lang selector */
+.lang-selector-dash { position: relative; }
+.lang-selector-dash .lang-toggle-btn {
+    border-color: var(--gray-200);
+    color: var(--gray-700);
+}
+.lang-selector-dash .lang-toggle-btn:hover {
+    background: var(--gray-100);
+    border-color: var(--gray-400);
+}
+
 /* ── Hero ───────────────────────────────── */
 .hero {
     min-height: 100vh;
