@@ -212,11 +212,12 @@
                     <label data-i18n="filter.breed">품종</label>
                     <select id="filterBreed">
                         <option value="all" data-i18n="filter.all">전체</option>
-                        <option value="한우">한우</option>
-                        <option value="홀스타인">홀스타인</option>
-                        <option value="Angus">앙거스</option>
-                        <option value="Hereford">헤리퍼드</option>
-                        <option value="Simmental">시멘탈</option>
+                        <option value="hanwoo"    data-i18n="breed.hanwoo">한우</option>
+                        <option value="holstein"  data-i18n="breed.holstein">홀스타인</option>
+                        <option value="jeju"      data-i18n="breed.jeju">제주흑우</option>
+                        <option value="angus"     data-i18n="breed.angus">앙거스</option>
+                        <option value="hereford"  data-i18n="breed.hereford">헤리퍼드</option>
+                        <option value="simmental" data-i18n="breed.simmental">시멘탈</option>
                     </select>
                 </div>
                 <button class="btn-outline btn-sm" id="btnResetFilter" data-i18n="filter.reset">
@@ -313,32 +314,93 @@
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
                 <div class="settings-card">
-                    <h4><i class="fa-solid fa-tower-broadcast"></i> Base Station 설정</h4>
-                    <div class="settings-row"><label>신호 수집 주기</label><select><option>10초</option><option>30초</option><option>1분</option><option>5분</option></select></div>
-                    <div class="settings-row"><label>커버리지 반경</label><select><option>1km</option><option selected>2km</option><option>3km</option></select></div>
-                    <div class="settings-row"><label>LTE-M 연결</label><span class="status-pill green">연결됨</span></div>
-                    <div class="settings-row"><label>LoRaWAN 연결</label><span class="status-pill green">연결됨</span></div>
+                    <h4><i class="fa-solid fa-tower-broadcast"></i> <span data-i18n="settings.base.title">Base Station 설정</span></h4>
+                    <div class="settings-row">
+                        <label data-i18n="settings.base.cycle">신호 수집 주기</label>
+                        <select>
+                            <option data-i18n="settings.cycle.10s">10초</option>
+                            <option data-i18n="settings.cycle.30s">30초</option>
+                            <option data-i18n="settings.cycle.1m">1분</option>
+                            <option data-i18n="settings.cycle.5m">5분</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <label data-i18n="settings.base.radius">커버리지 반경</label>
+                        <select><option>1km</option><option selected>2km</option><option>3km</option></select>
+                    </div>
+                    <div class="settings-row">
+                        <label data-i18n="settings.base.lte">LTE-M 연결</label>
+                        <span class="status-pill green" data-i18n="settings.pill.connected">연결됨</span>
+                    </div>
+                    <div class="settings-row">
+                        <label data-i18n="settings.base.lora">LoRaWAN 연결</label>
+                        <span class="status-pill green" data-i18n="settings.pill.connected">연결됨</span>
+                    </div>
                 </div>
                 <div class="settings-card">
-                    <h4><i class="fa-solid fa-bell"></i> 알림 설정</h4>
-                    <div class="settings-row"><label>긴급 알림 SMS</label><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
-                    <div class="settings-row"><label>발정 알림 앱 Push</label><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
-                    <div class="settings-row"><label>이탈 알림 이메일</label><label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label></div>
-                    <div class="settings-row"><label>체온 임계값</label><select><option>39.0°C</option><option selected>39.2°C</option><option>39.5°C</option></select></div>
+                    <h4><i class="fa-solid fa-bell"></i> <span data-i18n="settings.alert.title">알림 설정</span></h4>
+                    <div class="settings-row">
+                        <label data-i18n="settings.alert.sms">긴급 알림 SMS</label>
+                        <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                    </div>
+                    <div class="settings-row">
+                        <label data-i18n="settings.alert.push">발정 알림 앱 Push</label>
+                        <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                    </div>
+                    <div class="settings-row">
+                        <label data-i18n="settings.alert.email">이탈 알림 이메일</label>
+                        <label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label>
+                    </div>
+                    <div class="settings-row">
+                        <label data-i18n="settings.alert.threshold">체온 임계값</label>
+                        <select><option>39.0°C</option><option selected>39.2°C</option><option>39.5°C</option></select>
+                    </div>
                 </div>
                 <div class="settings-card">
-                    <h4><i class="fa-solid fa-cloud"></i> 클라우드 & 데이터</h4>
-                    <div class="settings-row"><label>데이터 저장 기간</label><select><option>6개월</option><option selected>1년</option><option>3년</option></select></div>
-                    <div class="settings-row"><label>자동 백업</label><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
-                    <div class="settings-row"><label>API 연동</label><span class="status-pill green">활성화</span></div>
-                    <div class="settings-row"><label>마지막 동기화</label><span class="text-sm text-gray" id="lastSync">—</span></div>
+                    <h4><i class="fa-solid fa-cloud"></i> <span data-i18n="settings.cloud.title">클라우드 & 데이터</span></h4>
+                    <div class="settings-row">
+                        <label data-i18n="settings.cloud.retention">데이터 저장 기간</label>
+                        <select>
+                            <option data-i18n="settings.retention.6m">6개월</option>
+                            <option selected data-i18n="settings.retention.1y">1년</option>
+                            <option data-i18n="settings.retention.3y">3년</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <label data-i18n="settings.cloud.backup">자동 백업</label>
+                        <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                    </div>
+                    <div class="settings-row">
+                        <label data-i18n="settings.cloud.api">API 연동</label>
+                        <span class="status-pill green" data-i18n="settings.pill.active">활성화</span>
+                    </div>
+                    <div class="settings-row">
+                        <label data-i18n="settings.cloud.sync">마지막 동기화</label>
+                        <span class="text-sm text-gray" id="lastSync">—</span>
+                    </div>
                 </div>
                 <div class="settings-card">
-                    <h4><i class="fa-solid fa-shield-halved"></i> 보안 설정</h4>
-                    <div class="settings-row"><label>2단계 인증</label><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
-                    <div class="settings-row"><label>세션 자동 로그아웃</label><select><option>30분</option><option selected>1시간</option><option>4시간</option></select></div>
-                    <div class="settings-row"><label>IP 화이트리스트</label><label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label></div>
-                    <div class="settings-row"><label>감사 로그</label><span class="status-pill blue">기록 중</span></div>
+                    <h4><i class="fa-solid fa-shield-halved"></i> <span data-i18n="settings.security.title">보안 설정</span></h4>
+                    <div class="settings-row">
+                        <label data-i18n="settings.security.2fa">2단계 인증</label>
+                        <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                    </div>
+                    <div class="settings-row">
+                        <label data-i18n="settings.security.timeout">세션 자동 로그아웃</label>
+                        <select>
+                            <option data-i18n="settings.timeout.30m">30분</option>
+                            <option selected data-i18n="settings.timeout.1h">1시간</option>
+                            <option data-i18n="settings.timeout.4h">4시간</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <label data-i18n="settings.security.ip">IP 화이트리스트</label>
+                        <label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label>
+                    </div>
+                    <div class="settings-row">
+                        <label data-i18n="settings.security.audit">감사 로그</label>
+                        <span class="status-pill blue" data-i18n="settings.pill.logging">기록 중</span>
+                    </div>
                 </div>
             </div>
             <div style="margin-top:1.5rem;display:flex;gap:0.75rem;">

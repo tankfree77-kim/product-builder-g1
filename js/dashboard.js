@@ -16,9 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateTime, 10000);
 
     /* ── Data Definitions ───────────────────── */
-    const koreanBreeds  = ['한우', '홀스타인', '제주흑우'];
-    const foreignBreeds = ['Angus', 'Hereford', 'Simmental'];
-    const allBreeds     = [...koreanBreeds, ...foreignBreeds];
+    const breedData = [
+        { key: 'hanwoo',    isKorean: true  },
+        { key: 'holstein',  isKorean: true  },
+        { key: 'jeju',      isKorean: true  },
+        { key: 'angus',     isKorean: false },
+        { key: 'hereford',  isKorean: false },
+        { key: 'simmental', isKorean: false },
+    ];
 
     const typeMap = {
         Bull:  { label: '숫소',  gender: '수컷', icon: '♂', labelEn: 'Bull'  },
@@ -52,9 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const typeKey  = typeKeys[Math.floor(Math.random() * typeKeys.length)];
         const typeInfo = typeMap[typeKey];
-        const breedIdx = Math.floor(Math.random() * allBreeds.length);
-        const breed    = allBreeds[breedIdx];
-        const isKorean = koreanBreeds.includes(breed);
+        const breedEntry = breedData[Math.floor(Math.random() * breedData.length)];
+        const breedKey   = breedEntry.key;
+        const isKorean   = breedEntry.isKorean;
 
         // Calves can be either gender
         let gender = typeInfo.gender;
@@ -84,10 +89,9 @@ document.addEventListener('DOMContentLoaded', () => {
             id:      `BVC-${tagNum}`,
             mac:     `00:1A:2B:3C:${macA}:${macB}`,
             name:    cowNames[Math.floor(Math.random() * cowNames.length)] + ` #${i + 1}`,
-            breed,
+            breedKey,
             isKorean,
             typeKey,
-            typeLabel: typeInfo.label,
             gender,
             age,
             temp: parseFloat(temp),
@@ -284,12 +288,13 @@ document.addEventListener('DOMContentLoaded', () => {
                           : I18N.get('status.normal');
         const typeLabel   = I18N.get('type.' + cow.typeKey.toLowerCase());
         const genderLabel = cow.gender === '수컷' ? I18N.get('gender.male') : I18N.get('gender.female');
+        const breedLabel  = I18N.get('breed.' + cow.breedKey);
         return `
             <div style="font-family:Inter,sans-serif;min-width:200px;">
                 <div style="font-size:1rem;font-weight:700;margin-bottom:6px;">${cow.name}</div>
                 <div style="font-size:0.8rem;color:#6b7280;margin-bottom:8px;">${cow.id} &nbsp;·&nbsp; ${cow.mac}</div>
                 <table style="width:100%;font-size:0.82rem;border-collapse:collapse;">
-                    <tr><td style="color:#6b7280;padding:2px 0;">${I18N.get('popup.breed')}</td><td style="font-weight:600;">${cow.breed}</td></tr>
+                    <tr><td style="color:#6b7280;padding:2px 0;">${I18N.get('popup.breed')}</td><td style="font-weight:600;">${breedLabel}</td></tr>
                     <tr><td style="color:#6b7280;padding:2px 0;">${I18N.get('popup.type')}</td><td style="font-weight:600;">${typeLabel} (${genderLabel})</td></tr>
                     <tr><td style="color:#6b7280;padding:2px 0;">${I18N.get('popup.age')}</td><td style="font-weight:600;">${cow.age}${I18N.get('unit.months')}</td></tr>
                     <tr><td style="color:#6b7280;padding:2px 0;">${I18N.get('popup.temp')}</td><td style="font-weight:700;color:${tempColor};">${cow.temp}°C</td></tr>
@@ -345,6 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const typeDisplay   = I18N.get('type.' + cow.typeKey.toLowerCase());
             const genderDisplay = cow.gender === '수컷' ? I18N.get('gender.male') : I18N.get('gender.female');
+            const breedDisplay  = I18N.get('breed.' + cow.breedKey);
             const monthUnit     = I18N.get('unit.months');
             const tempClass = cow.temp > 39.2 ? 'temp-cell temp-high' : 'temp-cell temp-normal';
             const breedClass = cow.isKorean ? 'breed-badge' : 'breed-badge foreign';
@@ -356,7 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="text-xs text-gray" style="font-family:monospace;">${cow.mac}</span>
                 </td>
                 <td style="font-weight:600;">${cow.name}</td>
-                <td><span class="${breedClass}">${cow.breed}</span></td>
+                <td><span class="${breedClass}">${breedDisplay}</span></td>
                 <td>${typeDisplay}</td>
                 <td>${genderDisplay}</td>
                 <td>${cow.age}<span class="text-gray text-xs"> ${monthUnit}</span></td>
@@ -403,7 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (sStatus !== 'all' && cow.status !== sStatus)        return false;
             if (sGender !== 'all' && cow.gender !== sGender)        return false;
             if (sType   !== 'all' && cow.typeKey !== sType)         return false;
-            if (sBreed  !== 'all' && cow.breed !== sBreed)          return false;
+            if (sBreed  !== 'all' && cow.breedKey !== sBreed)        return false;
             if (sSearch && ![cow.id, cow.name, cow.mac, cow.breed].some(
                 v => v.toLowerCase().includes(sSearch))) return false;
             return true;
@@ -458,7 +464,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="detail-grid">
                 <div class="detail-row"><span class="detail-label">${I18N.get('detail.status')}</span><span class="detail-value">${statusLabel}</span></div>
-                <div class="detail-row"><span class="detail-label">${I18N.get('detail.breed')}</span><span class="detail-value">${cow.breed}</span></div>
+                <div class="detail-row"><span class="detail-label">${I18N.get('detail.breed')}</span><span class="detail-value">${I18N.get('breed.' + cow.breedKey)}</span></div>
                 <div class="detail-row"><span class="detail-label">${I18N.get('detail.type')}</span><span class="detail-value">${typeDisplay} (${cow.typeKey})</span></div>
                 <div class="detail-row"><span class="detail-label">${I18N.get('detail.gender')}</span><span class="detail-value">${genderDisplay}</span></div>
                 <div class="detail-row"><span class="detail-label">${I18N.get('detail.age')}</span><span class="detail-value">${cow.age}${monthUnit} (${Math.floor(cow.age/12)}${yearUnit} ${cow.age%12}${monthUnit})</span></div>
@@ -552,7 +558,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td><span class="badge-status ${badgeClass}">${icon} ${label}</span></td>
                 <td style="font-family:monospace;font-size:0.82rem;">${cow.id}</td>
                 <td style="font-weight:600;">${cow.name}</td>
-                <td>${cow.breed}</td>
+                <td>${I18N.get('breed.' + cow.breedKey)}</td>
                 <td class="${cow.temp > 39.2 ? 'temp-high' : 'temp-normal'} temp-cell">${cow.temp}°C</td>
                 <td>${typeDisplay} · ${genderDisplay}</td>
                 <td class="text-gray" style="font-size:0.82rem;">${timeStr}</td>
@@ -582,7 +588,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sHeat   = cowsData.filter(c => c.status === 'Heat').length;
     const sUrgent = cowsData.filter(c => c.status === 'Urgent').length;
     const breedCount = {};
-    cowsData.forEach(c => { breedCount[c.breed] = (breedCount[c.breed] || 0) + 1; });
+    cowsData.forEach(c => { breedCount[c.breedKey] = (breedCount[c.breedKey] || 0) + 1; });
     const tempBuckets = { '37~38°C': 0, '38~39°C': 0, '39~40°C': 0, '40°C+': 0 };
     cowsData.forEach(c => {
         if (c.temp < 38)      tempBuckets['37~38°C']++;
@@ -608,7 +614,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('chartBreed').innerHTML =
             Object.entries(breedCount)
                 .sort((a,b) => b[1]-a[1])
-                .map(([breed, cnt], i) => buildBar(breed, cnt, TOTAL, breedColors[i % breedColors.length]))
+                .map(([bKey, cnt], i) => buildBar(I18N.get('breed.' + bKey), cnt, TOTAL, breedColors[i % breedColors.length]))
                 .join('');
 
         document.getElementById('chartTemp').innerHTML =
@@ -707,14 +713,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ── Users Section ──────────────────────── */
     const usersData = [
-        { name: '김민준', role: '목장주', email: 'mj.kim@happycow.kr',    last: '방금 전',    active: true  },
-        { name: '이수진', role: '수의사',  email: 'sj.lee@happycow.kr',    last: '1시간 전',   active: true  },
-        { name: '박철수', role: '현장관리', email: 'cs.park@happycow.kr',   last: '어제',       active: true  },
-        { name: 'Admin', role: '시스템관리자', email: 'admin@bovicare.io', last: '방금 전',    active: true  },
-        { name: '최영희', role: '직원',    email: 'yh.choi@happycow.kr',   last: '3일 전',     active: false },
+        { name: 'Carlos González',  roleKey: 'role.owner',    email: 'c.gonzalez@happycow.py',  timeKey: 'time.justnow',   active: true  },
+        { name: 'María Pereira',    roleKey: 'role.vet',      email: 'm.pereira@happycow.py',   timeKey: 'time.1hour',     active: true  },
+        { name: 'Juan Rodríguez',   roleKey: 'role.field',    email: 'j.rodriguez@happycow.py', timeKey: 'time.yesterday', active: true  },
+        { name: 'Admin',            roleKey: 'role.sysadmin', email: 'admin@bovicare.io',        timeKey: 'time.justnow',   active: true  },
+        { name: 'Ana Fleitas',      roleKey: 'role.staff',    email: 'a.fleitas@happycow.py',   timeKey: 'time.3days',     active: false },
     ];
-    const utbody = document.getElementById('usersTableBody');
-    if (utbody) {
+
+    function renderUsers() {
+        const utbody = document.getElementById('usersTableBody');
+        if (!utbody) return;
         utbody.innerHTML = usersData.map(u => `
             <tr>
                 <td>
@@ -725,10 +733,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         <strong>${u.name}</strong>
                     </div>
                 </td>
-                <td><span class="breed-badge">${u.role}</span></td>
+                <td><span class="breed-badge">${I18N.get(u.roleKey)}</span></td>
                 <td class="text-gray" style="font-size:0.875rem;">${u.email}</td>
-                <td class="text-gray" style="font-size:0.875rem;">${u.last}</td>
-                <td><span class="status-pill ${u.active ? 'green' : ''}" style="${!u.active?'background:#f3f4f6;color:#9ca3af;':''}">${u.active ? '활성' : '비활성'}</span></td>
+                <td class="text-gray" style="font-size:0.875rem;">${I18N.get(u.timeKey)}</td>
+                <td><span class="status-pill ${u.active ? 'green' : ''}" style="${!u.active?'background:#f3f4f6;color:#9ca3af;':''}">${u.active ? I18N.get('users.active') : I18N.get('users.inactive')}</span></td>
                 <td>
                     <button class="btn-outline btn-sm" onclick="showToastGlobal('사용자 편집 기능은 준비 중입니다.','info')">
                         <i class="fa-solid fa-pen"></i>
@@ -736,12 +744,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 </td>
             </tr>`).join('');
     }
+    renderUsers();
 
     /* ── CSV Export ─────────────────────────── */
     document.getElementById('btnExportCSV').addEventListener('click', () => {
         const headers = ['Status','Tag ID','MAC','Name','Breed','Type','Gender','Age(mo)','Temp(°C)','Lat','Lng'];
         const rows = cowsData.map(c => [
-            c.status, c.id, c.mac, c.name, c.breed, c.typeKey, c.gender, c.age, c.temp, c.lat.toFixed(5), c.lng.toFixed(5)
+            c.status, c.id, c.mac, c.name, I18N.get('breed.' + c.breedKey), c.typeKey, c.gender, c.age, c.temp, c.lat.toFixed(5), c.lng.toFixed(5)
         ]);
         const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
         const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' }); // BOM for Excel Korean
@@ -754,9 +763,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ── Language Change: re-render dynamic content ── */
     document.addEventListener('langchange', () => {
-        // Re-render cattle table with current filter state
         applyFilters();
-        // Re-render alerts
         const alertTbody = document.getElementById('alertTableBody');
         const isEmpty = alertTbody && alertTbody.children.length === 1 &&
                         alertTbody.querySelector('td[colspan]');
@@ -766,12 +773,10 @@ document.addEventListener('DOMContentLoaded', () => {
             buildAlertRows(allAlerts);
             updateAlertCount(allAlerts.length);
         }
-        // Re-render reports
         buildReports();
-        // Update map count
+        renderUsers();
         document.getElementById('mapCowCount').querySelector('span').textContent =
             I18N.get('map.count').replace('{n}', TOTAL);
-        // Update clock
         updateTime();
     });
 
