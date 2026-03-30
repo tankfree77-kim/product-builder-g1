@@ -458,51 +458,42 @@ document.addEventListener('DOMContentLoaded', () => {
     closeDetail?.addEventListener('click', () => detailModal.classList.remove('show'));
     window.addEventListener('click', (e) => { if (e.target === detailModal) detailModal.classList.remove('show'); });
 
-    /* ── Sidebar Navigation ─────────────────── */
-    const mainContent = document.querySelector('.main-content');
+    /* ── Sidebar Navigation (tab-switch, no scroll) ── */
+    const SECTION_IDS = [
+        'summary-section', 'map-section', 'table-section',
+        'alerts-section', 'reports-section', 'settings-section', 'users-section'
+    ];
 
-    /* Directly calculate offset within .main-content and set scrollTop */
-    function scrollToSection(sectionId) {
+    function showSection(sectionId) {
+        /* Hide all sections */
+        SECTION_IDS.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('active');
+        });
+        /* Show target section */
         const target = document.getElementById(sectionId);
-        if (!target || !mainContent) return;
-        const containerTop = mainContent.getBoundingClientRect().top;
-        const targetTop    = target.getBoundingClientRect().top;
-        const offset       = mainContent.scrollTop + (targetTop - containerTop) - 16;
-        mainContent.scrollTo({ top: offset, behavior: 'smooth' });
-    }
-
-    /* Track whether a click-scroll is in progress to avoid IO overriding active state */
-    let navClickPending = false;
-
-    function setActiveNav(sectionId) {
+        if (target) {
+            target.classList.add('active');
+            /* Scroll main-content back to top so section is visible immediately */
+            const mc = document.querySelector('.main-content');
+            if (mc) mc.scrollTop = 0;
+        }
+        /* Update sidebar active state */
         document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
-        const link = document.querySelector(`.sidebar-menu a[data-section="${sectionId}"]`);
-        if (link) link.closest('li').classList.add('active');
+        const activeLink = document.querySelector(`.sidebar-menu a[data-section="${sectionId}"]`);
+        if (activeLink) activeLink.closest('li').classList.add('active');
+
+        /* Leaflet needs invalidateSize whenever its container becomes visible */
+        if (sectionId === 'map-section') {
+            setTimeout(() => { map.invalidateSize(); }, 50);
+        }
     }
 
     document.querySelectorAll('.sidebar-menu a[data-section]').forEach(link => {
         link.addEventListener('click', e => {
             e.preventDefault();
-            const sectionId = link.dataset.section;
-            setActiveNav(sectionId);
-            navClickPending = true;
-            scrollToSection(sectionId);
-            setTimeout(() => { navClickPending = false; }, 800);
+            showSection(link.dataset.section);
         });
-    });
-
-    /* IntersectionObserver — auto-highlight active nav on scroll */
-    const sectionIds = ['summary-section','map-section','table-section','alerts-section','reports-section','settings-section','users-section'];
-    const ioOptions  = { root: mainContent, rootMargin: '0px 0px -60% 0px', threshold: 0 };
-    const io = new IntersectionObserver(entries => {
-        if (navClickPending) return;
-        entries.forEach(entry => {
-            if (entry.isIntersecting) setActiveNav(entry.target.id);
-        });
-    }, ioOptions);
-    sectionIds.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) io.observe(el);
     });
 
     /* ── Alerts Section ─────────────────────── */

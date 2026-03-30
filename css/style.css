@@ -657,6 +657,12 @@ section .section-label { display: block; text-align: center; }
 /* Main Content */
 .main-content { flex: 1; padding: 2rem 2.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem; }
 
+/* ── Dashboard Section Show/Hide ── */
+.dash-section { display: none; }
+.dash-section.active { display: block; }
+/* stats-grid is a grid layout, not block */
+.stats-grid.dash-section.active { display: grid; }
+
 /* Dash Header */
 .dash-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
 .dash-header h1 { font-size: 1.6rem; }
