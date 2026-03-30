@@ -140,6 +140,13 @@ document.addEventListener('DOMContentLoaded', () => {
     );
     tileNormal.addTo(map);
 
+    /* Force Leaflet to recalculate map container size after layout paint */
+    setTimeout(() => { map.invalidateSize(); }, 150);
+    /* Also re-invalidate when main content scrolls (sidebar menu links) */
+    document.querySelector('.main-content')?.addEventListener('scroll', () => {
+        map.invalidateSize();
+    });
+
     /* Map layer toggle */
     document.getElementById('btnNormal').addEventListener('click', function() {
         map.removeLayer(tileSatellite);
