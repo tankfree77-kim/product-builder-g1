@@ -253,7 +253,7 @@
                 <div class="table-actions">
                     <span class="text-sm text-gray" id="alertCount"></span>
                     <button class="btn-outline btn-sm" id="btnClearAlerts">
-                        <i class="fa-solid fa-trash-can"></i> 전체 삭제
+                        <i class="fa-solid fa-trash-can"></i> <span data-i18n="alert.btn.clear">전체 삭제</span>
                     </button>
                 </div>
             </div>
@@ -261,14 +261,14 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>수준</th>
+                            <th data-i18n="alert.th.level">수준</th>
                             <th>Tag ID</th>
-                            <th>이름</th>
-                            <th>품종</th>
-                            <th>체온</th>
-                            <th>상태</th>
-                            <th>발생 시각</th>
-                            <th>위치</th>
+                            <th data-i18n="alert.th.name">이름</th>
+                            <th data-i18n="alert.th.breed">품종</th>
+                            <th data-i18n="th.temp">체온</th>
+                            <th data-i18n="alert.th.status">상태</th>
+                            <th data-i18n="alert.th.time">발생 시각</th>
+                            <th data-i18n="alert.th.location">위치</th>
                         </tr>
                     </thead>
                     <tbody id="alertTableBody"></tbody>
@@ -285,22 +285,22 @@
             <!-- Row 1: status + type bars -->
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
                 <div class="report-card">
-                    <h4 class="report-card-title"><i class="fa-solid fa-heart-pulse"></i> 건강 상태 분포</h4>
+                    <h4 class="report-card-title"><i class="fa-solid fa-heart-pulse"></i> <span data-i18n="chart.status.title">건강 상태 분포</span></h4>
                     <div id="chartStatus"></div>
                 </div>
                 <div class="report-card">
-                    <h4 class="report-card-title"><i class="fa-solid fa-tag"></i> 개체 종류 분포</h4>
+                    <h4 class="report-card-title"><i class="fa-solid fa-tag"></i> <span data-i18n="chart.type.title">개체 종류 분포</span></h4>
                     <div id="chartType"></div>
                 </div>
             </div>
             <!-- Row 2: breed + temp -->
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
                 <div class="report-card">
-                    <h4 class="report-card-title"><i class="fa-solid fa-dna"></i> 품종 분포</h4>
+                    <h4 class="report-card-title"><i class="fa-solid fa-dna"></i> <span data-i18n="chart.breed.title">품종 분포</span></h4>
                     <div id="chartBreed"></div>
                 </div>
                 <div class="report-card">
-                    <h4 class="report-card-title"><i class="fa-solid fa-thermometer-half"></i> 평균 체온 현황</h4>
+                    <h4 class="report-card-title"><i class="fa-solid fa-thermometer-half"></i> <span data-i18n="chart.temp.title">평균 체온 현황</span></h4>
                     <div id="chartTemp"></div>
                 </div>
             </div>
@@ -342,8 +342,8 @@
                 </div>
             </div>
             <div style="margin-top:1.5rem;display:flex;gap:0.75rem;">
-                <button class="btn-primary" onclick="showToastGlobal('설정이 저장되었습니다.','success')"><i class="fa-solid fa-floppy-disk"></i> 설정 저장</button>
-                <button class="btn-outline" onclick="showToastGlobal('설정이 초기화되었습니다.','info')"><i class="fa-solid fa-rotate-left"></i> 기본값 복원</button>
+                <button class="btn-primary" id="btnSettingsSave"><i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings.save.btn">설정 저장</span></button>
+                <button class="btn-outline" id="btnSettingsReset"><i class="fa-solid fa-rotate-left"></i> <span data-i18n="settings.reset.btn">기본값 복원</span></button>
             </div>
         </section>
 
@@ -353,7 +353,7 @@
                 <h2><i class="fa-solid fa-users text-primary"></i> <span data-i18n="dash.nav.users">사용자 관리</span></h2>
                 <div class="table-actions">
                     <button class="btn-primary btn-sm" onclick="showToastGlobal('사용자 추가 기능은 준비 중입니다.','info')">
-                        <i class="fa-solid fa-user-plus"></i> 사용자 추가
+                        <i class="fa-solid fa-user-plus"></i> <span data-i18n="users.add">사용자 추가</span>
                     </button>
                 </div>
             </div>
@@ -361,7 +361,12 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>이름</th><th>역할</th><th>이메일</th><th>마지막 접속</th><th>상태</th><th>관리</th>
+                            <th data-i18n="users.th.name">이름</th>
+                            <th data-i18n="users.th.role">역할</th>
+                            <th data-i18n="users.th.email">이메일</th>
+                            <th data-i18n="users.th.last">마지막 접속</th>
+                            <th data-i18n="users.th.status">상태</th>
+                            <th data-i18n="users.th.manage">관리</th>
                         </tr>
                     </thead>
                     <tbody id="usersTableBody"></tbody>
@@ -370,6 +375,30 @@
         </section>
 
     </main>
+
+    <!-- Settings Admin Password Modal -->
+    <div id="settingsAuthModal" class="modal">
+        <div class="modal-content" style="max-width:420px;">
+            <span class="close-btn" id="closeSettingsAuth">&times;</span>
+            <div style="text-align:center;padding:1rem 0 0.5rem;">
+                <div style="font-size:2.5rem;margin-bottom:0.75rem;color:#0D8ABC;">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h3 style="font-size:1.25rem;font-weight:700;" data-i18n="settings.password.title">관리자 인증</h3>
+                <p class="text-gray" style="font-size:0.875rem;margin-top:0.5rem;" data-i18n="settings.password.desc">시스템 설정 변경에는 관리자 권한이 필요합니다.</p>
+            </div>
+            <div style="padding:1rem 0;">
+                <label style="display:block;font-weight:600;margin-bottom:0.5rem;" data-i18n="settings.password.label">관리자 비밀번호</label>
+                <input type="password" id="settingsPassword"
+                       style="width:100%;padding:0.75rem 1rem;border:2px solid #e5e7eb;border-radius:8px;font-size:1rem;box-sizing:border-box;outline:none;"
+                       data-i18n-ph="settings.password.ph" placeholder="비밀번호 입력">
+                <p id="settingsPasswordError" style="color:#ef4444;font-size:0.875rem;margin-top:0.5rem;display:none;" data-i18n="settings.password.error">
+                    비밀번호가 올바르지 않습니다.
+                </p>
+            </div>
+            <button id="settingsAuthSubmit" class="btn-primary" style="width:100%;margin-top:0.25rem;" data-i18n="settings.password.submit">확인</button>
+        </div>
+    </div>
 
     <!-- Detail Modal -->
     <div id="detailModal" class="modal">

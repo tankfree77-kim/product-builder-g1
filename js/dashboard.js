@@ -7,8 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
     /* Live clock */
     function updateTime() {
         const now = new Date();
+        const lang = I18N.currentLang;
+        const locale = lang === 'ko' ? 'ko-KR' : lang === 'ja' ? 'ja-JP' : lang === 'es' ? 'es-ES' : 'en-US';
         document.getElementById('lastUpdate').textContent =
-            '마지막 업데이트: ' + now.toLocaleTimeString('ko-KR');
+            I18N.get('clock.update') + now.toLocaleTimeString(locale);
     }
     updateTime();
     setInterval(updateTime, 10000);
@@ -120,11 +122,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* Alert banner count */
     if (stats.urgent > 0) {
-        document.getElementById('alertText').textContent =
-            `긴급 알림: ${stats.urgent}마리의 이상 개체가 감지되었습니다. 즉시 확인이 필요합니다.`;
-        document.getElementById('notifDot').style.display = stats.urgent > 0 ? 'block' : 'none';
+        document.getElementById('alertBanner').style.display = '';
+        document.getElementById('notifDot').style.display = 'block';
     } else {
         document.getElementById('alertBanner').style.display = 'none';
+        document.getElementById('notifDot').style.display = 'none';
     }
 
     /* ── Leaflet Map ────────────────────────── */
@@ -277,16 +279,21 @@ document.addEventListener('DOMContentLoaded', () => {
     function buildPopup(cow) {
         const statusColor = cow.status === 'Urgent' ? '#b91c1c' : cow.status === 'Heat' ? '#b45309' : '#047857';
         const tempColor   = cow.temp > 39.2 ? '#b91c1c' : '#047857';
+        const statusLabel = cow.status === 'Urgent' ? I18N.get('status.urgent.short')
+                          : cow.status === 'Heat'   ? I18N.get('status.heat.short')
+                          : I18N.get('status.normal');
+        const typeLabel   = I18N.get('type.' + cow.typeKey.toLowerCase());
+        const genderLabel = cow.gender === '수컷' ? I18N.get('gender.male') : I18N.get('gender.female');
         return `
             <div style="font-family:Inter,sans-serif;min-width:200px;">
                 <div style="font-size:1rem;font-weight:700;margin-bottom:6px;">${cow.name}</div>
                 <div style="font-size:0.8rem;color:#6b7280;margin-bottom:8px;">${cow.id} &nbsp;·&nbsp; ${cow.mac}</div>
                 <table style="width:100%;font-size:0.82rem;border-collapse:collapse;">
-                    <tr><td style="color:#6b7280;padding:2px 0;">품종</td><td style="font-weight:600;">${cow.breed}</td></tr>
-                    <tr><td style="color:#6b7280;padding:2px 0;">종류</td><td style="font-weight:600;">${cow.typeLabel} (${cow.gender})</td></tr>
-                    <tr><td style="color:#6b7280;padding:2px 0;">나이</td><td style="font-weight:600;">${cow.age}개월</td></tr>
-                    <tr><td style="color:#6b7280;padding:2px 0;">체온</td><td style="font-weight:700;color:${tempColor};">${cow.temp}°C</td></tr>
-                    <tr><td style="color:#6b7280;padding:2px 0;">상태</td><td style="font-weight:700;color:${statusColor};">${cow.status}</td></tr>
+                    <tr><td style="color:#6b7280;padding:2px 0;">${I18N.get('popup.breed')}</td><td style="font-weight:600;">${cow.breed}</td></tr>
+                    <tr><td style="color:#6b7280;padding:2px 0;">${I18N.get('popup.type')}</td><td style="font-weight:600;">${typeLabel} (${genderLabel})</td></tr>
+                    <tr><td style="color:#6b7280;padding:2px 0;">${I18N.get('popup.age')}</td><td style="font-weight:600;">${cow.age}${I18N.get('unit.months')}</td></tr>
+                    <tr><td style="color:#6b7280;padding:2px 0;">${I18N.get('popup.temp')}</td><td style="font-weight:700;color:${tempColor};">${cow.temp}°C</td></tr>
+                    <tr><td style="color:#6b7280;padding:2px 0;">${I18N.get('popup.status')}</td><td style="font-weight:700;color:${statusColor};">${statusLabel}</td></tr>
                 </table>
                 <div style="font-size:0.75rem;color:#9ca3af;margin-top:8px;">
                     📍 ${cow.lat.toFixed(5)}, ${cow.lng.toFixed(5)}
@@ -304,18 +311,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('mapCowCount').querySelector('span').textContent =
-        `${TOTAL}개 EAR TAG 표시 중`;
+        I18N.get('map.count').replace('{n}', TOTAL);
 
     /* ── Render Table ───────────────────────── */
     const tableBody = document.getElementById('cowTableBody');
 
     function renderTable(data) {
         tableBody.innerHTML = '';
-        document.getElementById('filterResultCount').textContent =
-            data.length < TOTAL ? `${data.length}마리 표시됨` : '';
+        const resultCount = document.getElementById('filterResultCount');
+        if (data.length < TOTAL) {
+            resultCount.textContent = I18N.get('filter.result').replace('{n}', data.length);
+        } else {
+            resultCount.textContent = '';
+        }
 
         if (data.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:2.5rem;color:#9ca3af;">조건에 맞는 개체가 없습니다.</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:2.5rem;color:#9ca3af;">${I18N.get('table.empty')}</td></tr>`;
             return;
         }
 
@@ -323,15 +334,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const tr = document.createElement('tr');
 
             let badgeClass = 'badge-normal';
-            let statusLabel = '<i class="fa-solid fa-circle-check"></i> 정상 활동';
+            let statusLabel = `<i class="fa-solid fa-circle-check"></i> ${I18N.get('status.normal')}`;
             if (cow.status === 'Urgent') {
                 badgeClass  = 'badge-urgent';
-                statusLabel = '<i class="fa-solid fa-triangle-exclamation"></i> 건강이상/이탈';
+                statusLabel = `<i class="fa-solid fa-triangle-exclamation"></i> ${I18N.get('status.urgent')}`;
             } else if (cow.status === 'Heat') {
                 badgeClass  = 'badge-heat';
-                statusLabel = '<i class="fa-solid fa-fire"></i> 발정 의심';
+                statusLabel = `<i class="fa-solid fa-fire"></i> ${I18N.get('status.heat')}`;
             }
 
+            const typeDisplay   = I18N.get('type.' + cow.typeKey.toLowerCase());
+            const genderDisplay = cow.gender === '수컷' ? I18N.get('gender.male') : I18N.get('gender.female');
+            const monthUnit     = I18N.get('unit.months');
             const tempClass = cow.temp > 39.2 ? 'temp-cell temp-high' : 'temp-cell temp-normal';
             const breedClass = cow.isKorean ? 'breed-badge' : 'breed-badge foreign';
 
@@ -343,9 +357,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 </td>
                 <td style="font-weight:600;">${cow.name}</td>
                 <td><span class="${breedClass}">${cow.breed}</span></td>
-                <td>${cow.typeLabel}</td>
-                <td>${cow.gender}</td>
-                <td>${cow.age}<span class="text-gray text-xs"> 개월</span></td>
+                <td>${typeDisplay}</td>
+                <td>${genderDisplay}</td>
+                <td>${cow.age}<span class="text-gray text-xs"> ${monthUnit}</span></td>
                 <td class="${tempClass}">${cow.temp}°C</td>
                 <td class="text-gray" style="font-size:0.82rem;font-family:monospace;">
                     ${cow.lat.toFixed(4)}, ${cow.lng.toFixed(4)}
@@ -426,6 +440,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         : '#10b981';
         const icon = cow.typeKey === 'Bull' ? '♂' : cow.typeKey === 'Cow' ? '♀' : cow.typeKey === 'Calf' ? '◎' : '✦';
 
+        const statusLabel = cow.status === 'Urgent' ? I18N.get('status.urgent.short')
+                          : cow.status === 'Heat'   ? I18N.get('status.heat.short')
+                          : I18N.get('status.normal');
+        const typeDisplay   = I18N.get('type.' + cow.typeKey.toLowerCase());
+        const genderDisplay = cow.gender === '수컷' ? I18N.get('gender.male') : I18N.get('gender.female');
+        const monthUnit     = I18N.get('unit.months');
+        const yearUnit      = I18N.get('unit.years');
+
         detailContent.innerHTML = `
             <div class="detail-header">
                 <div class="detail-avatar" style="background:${bgColor};color:${iconColor};font-size:2rem;">${icon}</div>
@@ -435,20 +457,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
             <div class="detail-grid">
-                <div class="detail-row"><span class="detail-label">상태</span><span class="detail-value">${cow.status}</span></div>
-                <div class="detail-row"><span class="detail-label">품종 (Breed)</span><span class="detail-value">${cow.breed}</span></div>
-                <div class="detail-row"><span class="detail-label">종류 (Type)</span><span class="detail-value">${cow.typeLabel} (${cow.typeKey})</span></div>
-                <div class="detail-row"><span class="detail-label">성별</span><span class="detail-value">${cow.gender}</span></div>
-                <div class="detail-row"><span class="detail-label">나이</span><span class="detail-value">${cow.age}개월 (${Math.floor(cow.age/12)}년 ${cow.age%12}개월)</span></div>
-                <div class="detail-row"><span class="detail-label">체온</span><span class="detail-value" style="color:${cow.temp>39.2?'#ef4444':'#10b981'}">${cow.temp}°C</span></div>
-                <div class="detail-row"><span class="detail-label">위도 (Lat)</span><span class="detail-value" style="font-family:monospace;">${cow.lat.toFixed(6)}</span></div>
-                <div class="detail-row"><span class="detail-label">경도 (Lng)</span><span class="detail-value" style="font-family:monospace;">${cow.lng.toFixed(6)}</span></div>
+                <div class="detail-row"><span class="detail-label">${I18N.get('detail.status')}</span><span class="detail-value">${statusLabel}</span></div>
+                <div class="detail-row"><span class="detail-label">${I18N.get('detail.breed')}</span><span class="detail-value">${cow.breed}</span></div>
+                <div class="detail-row"><span class="detail-label">${I18N.get('detail.type')}</span><span class="detail-value">${typeDisplay} (${cow.typeKey})</span></div>
+                <div class="detail-row"><span class="detail-label">${I18N.get('detail.gender')}</span><span class="detail-value">${genderDisplay}</span></div>
+                <div class="detail-row"><span class="detail-label">${I18N.get('detail.age')}</span><span class="detail-value">${cow.age}${monthUnit} (${Math.floor(cow.age/12)}${yearUnit} ${cow.age%12}${monthUnit})</span></div>
+                <div class="detail-row"><span class="detail-label">${I18N.get('detail.temp')}</span><span class="detail-value" style="color:${cow.temp>39.2?'#ef4444':'#10b981'}">${cow.temp}°C</span></div>
+                <div class="detail-row"><span class="detail-label">${I18N.get('detail.lat')}</span><span class="detail-value" style="font-family:monospace;">${cow.lat.toFixed(6)}</span></div>
+                <div class="detail-row"><span class="detail-label">${I18N.get('detail.lng')}</span><span class="detail-value" style="font-family:monospace;">${cow.lng.toFixed(6)}</span></div>
                 <div class="detail-row"><span class="detail-label">Tag ID</span><span class="detail-value" style="font-family:monospace;">${cow.id}</span></div>
                 <div class="detail-row"><span class="detail-label">MAC Address</span><span class="detail-value" style="font-family:monospace;font-size:0.9rem;">${cow.mac}</span></div>
             </div>
             <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid #e5e7eb;">
                 <button class="btn-primary btn-sm" onclick="document.getElementById('detailModal').classList.remove('show')">
-                    닫기
+                    ${I18N.get('detail.close')}
                 </button>
             </div>
         `;
@@ -489,19 +511,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    document.querySelectorAll('.sidebar-menu a[data-section]').forEach(link => {
-        link.addEventListener('click', e => {
-            e.preventDefault();
-            showSection(link.dataset.section);
-        });
-    });
+    /* sidebar nav — auth-aware binding is set up below after openSettingsAuth is defined */
 
     /* ── Alerts Section ─────────────────────── */
     const urgentCows = cowsData.filter(c => c.status === 'Urgent');
     const heatCows   = cowsData.filter(c => c.status === 'Heat');
     const allAlerts  = [...urgentCows, ...heatCows];
 
-    document.getElementById('alertCount').textContent = `총 ${allAlerts.length}건`;
+    function updateAlertCount(count) {
+        document.getElementById('alertCount').textContent =
+            I18N.get('alert.total').replace('{n}', count);
+    }
+    updateAlertCount(allAlerts.length);
 
     function buildAlertRows(list) {
         const tbody = document.getElementById('alertTableBody');
@@ -509,20 +530,23 @@ document.addEventListener('DOMContentLoaded', () => {
         tbody.innerHTML = '';
         if (list.length === 0) {
             tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:2rem;color:#9ca3af;">
-                <i class="fa-solid fa-circle-check" style="color:#10b981;margin-right:0.5rem;"></i>이상 알림이 없습니다.</td></tr>`;
+                <i class="fa-solid fa-circle-check" style="color:#10b981;margin-right:0.5rem;"></i>${I18N.get('alert.none')}</td></tr>`;
             return;
         }
+        const lang = I18N.currentLang;
+        const locale = lang === 'ko' ? 'ko-KR' : lang === 'ja' ? 'ja-JP' : lang === 'es' ? 'es-ES' : 'en-US';
         const now = new Date();
-        list.forEach((cow, idx) => {
+        list.forEach((cow) => {
             const isUrgent = cow.status === 'Urgent';
             const badgeClass = isUrgent ? 'badge-urgent' : 'badge-heat';
             const icon  = isUrgent ? '<i class="fa-solid fa-triangle-exclamation"></i>' : '<i class="fa-solid fa-fire"></i>';
-            const label = isUrgent ? '긴급' : '발정 의심';
-            // Fake timestamp: spread alerts within last 24 hours
+            const label = isUrgent ? I18N.get('status.urgent.short') : I18N.get('status.heat.short');
+            const typeDisplay   = I18N.get('type.' + cow.typeKey.toLowerCase());
+            const genderDisplay = cow.gender === '수컷' ? I18N.get('gender.male') : I18N.get('gender.female');
             const minsAgo = Math.floor(Math.random() * 1440);
             const t = new Date(now - minsAgo * 60000);
-            const timeStr = t.toLocaleTimeString('ko-KR', { hour:'2-digit', minute:'2-digit' }) +
-                            ' ' + t.toLocaleDateString('ko-KR', { month:'2-digit', day:'2-digit' });
+            const timeStr = t.toLocaleTimeString(locale, { hour:'2-digit', minute:'2-digit' }) +
+                            ' ' + t.toLocaleDateString(locale, { month:'2-digit', day:'2-digit' });
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td><span class="badge-status ${badgeClass}">${icon} ${label}</span></td>
@@ -530,7 +554,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td style="font-weight:600;">${cow.name}</td>
                 <td>${cow.breed}</td>
                 <td class="${cow.temp > 39.2 ? 'temp-high' : 'temp-normal'} temp-cell">${cow.temp}°C</td>
-                <td>${cow.typeLabel} · ${cow.gender}</td>
+                <td>${typeDisplay} · ${genderDisplay}</td>
                 <td class="text-gray" style="font-size:0.82rem;">${timeStr}</td>
                 <td class="text-gray" style="font-size:0.82rem;font-family:monospace;">${cow.lat.toFixed(4)}, ${cow.lng.toFixed(4)}</td>`;
             tbody.appendChild(tr);
@@ -540,8 +564,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btnClearAlerts')?.addEventListener('click', () => {
         buildAlertRows([]);
-        document.getElementById('alertCount').textContent = '총 0건';
-        showToast('알림 내역이 삭제되었습니다.', 'success');
+        updateAlertCount(0);
+        showToast(I18N.get('alert.clear.ok'), 'success');
     });
 
     /* ── Reports Section ─────────────────────── */
@@ -554,33 +578,11 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>`;
     }
 
-    // Status chart
     const sNormal = cowsData.filter(c => c.status === 'Normal').length;
     const sHeat   = cowsData.filter(c => c.status === 'Heat').length;
     const sUrgent = cowsData.filter(c => c.status === 'Urgent').length;
-    document.getElementById('chartStatus').innerHTML =
-        buildBar('정상 (Normal)', sNormal, TOTAL, '#10b981') +
-        buildBar('발정 (Heat)',   sHeat,   TOTAL, '#f59e0b') +
-        buildBar('긴급 (Urgent)', sUrgent, TOTAL, '#ef4444');
-
-    // Type chart
-    document.getElementById('chartType').innerHTML =
-        buildBar('숫소 (Bull)',   stats.Bull,  TOTAL, '#0284c7') +
-        buildBar('암소 (Cow)',    stats.Cow,   TOTAL, '#db2777') +
-        buildBar('송아지 (Calf)', stats.Calf,  TOTAL, '#d97706') +
-        buildBar('거세소 (Steer)',stats.Steer, TOTAL, '#7c3aed');
-
-    // Breed chart
     const breedCount = {};
     cowsData.forEach(c => { breedCount[c.breed] = (breedCount[c.breed] || 0) + 1; });
-    const breedColors = ['#0D8ABC','#10b981','#f59e0b','#ef4444','#7c3aed','#64748b'];
-    document.getElementById('chartBreed').innerHTML =
-        Object.entries(breedCount)
-            .sort((a,b) => b[1]-a[1])
-            .map(([breed, cnt], i) => buildBar(breed, cnt, TOTAL, breedColors[i % breedColors.length]))
-            .join('');
-
-    // Temp chart
     const tempBuckets = { '37~38°C': 0, '38~39°C': 0, '39~40°C': 0, '40°C+': 0 };
     cowsData.forEach(c => {
         if (c.temp < 38)      tempBuckets['37~38°C']++;
@@ -588,15 +590,116 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (c.temp < 40) tempBuckets['39~40°C']++;
         else                  tempBuckets['40°C+']++;
     });
-    const tempColors = ['#10b981','#10b981','#f59e0b','#ef4444'];
-    document.getElementById('chartTemp').innerHTML =
-        Object.entries(tempBuckets)
-            .map(([label, cnt], i) => buildBar(label, cnt, TOTAL, tempColors[i]))
-            .join('');
+    const breedColors = ['#0D8ABC','#10b981','#f59e0b','#ef4444','#7c3aed','#64748b'];
+    const tempColors  = ['#10b981','#10b981','#f59e0b','#ef4444'];
+
+    function buildReports() {
+        document.getElementById('chartStatus').innerHTML =
+            buildBar(I18N.get('report.normal'), sNormal, TOTAL, '#10b981') +
+            buildBar(I18N.get('report.heat'),   sHeat,   TOTAL, '#f59e0b') +
+            buildBar(I18N.get('report.urgent'), sUrgent, TOTAL, '#ef4444');
+
+        document.getElementById('chartType').innerHTML =
+            buildBar(I18N.get('report.bull'),   stats.Bull,  TOTAL, '#0284c7') +
+            buildBar(I18N.get('report.cow'),    stats.Cow,   TOTAL, '#db2777') +
+            buildBar(I18N.get('report.calf'),   stats.Calf,  TOTAL, '#d97706') +
+            buildBar(I18N.get('report.steer'),  stats.Steer, TOTAL, '#7c3aed');
+
+        document.getElementById('chartBreed').innerHTML =
+            Object.entries(breedCount)
+                .sort((a,b) => b[1]-a[1])
+                .map(([breed, cnt], i) => buildBar(breed, cnt, TOTAL, breedColors[i % breedColors.length]))
+                .join('');
+
+        document.getElementById('chartTemp').innerHTML =
+            Object.entries(tempBuckets)
+                .map(([label, cnt], i) => buildBar(label, cnt, TOTAL, tempColors[i]))
+                .join('');
+    }
+    buildReports();
 
     const reportRanchName = localStorage.getItem('bovicare_ranch_name') || 'HappyCow Ranch';
     const rEl = document.getElementById('reportRanchName');
     if (rEl) rEl.textContent = reportRanchName + ' · ' + new Date().toLocaleDateString('ko-KR');
+
+    /* ── Settings Admin Password Protection ──── */
+    const ADMIN_PASSWORD = 'admin2024';
+    let settingsUnlocked = false;
+
+    const settingsAuthModal = document.getElementById('settingsAuthModal');
+    const settingsPassword  = document.getElementById('settingsPassword');
+    const settingsPasswordError = document.getElementById('settingsPasswordError');
+
+    function openSettingsAuth(onSuccess) {
+        settingsPassword.value = '';
+        settingsPasswordError.style.display = 'none';
+        settingsAuthModal.classList.add('show');
+        setTimeout(() => settingsPassword.focus(), 100);
+
+        // one-time submit handler
+        const submit = document.getElementById('settingsAuthSubmit');
+        const newSubmit = submit.cloneNode(true);
+        submit.parentNode.replaceChild(newSubmit, submit);
+        newSubmit.setAttribute('data-i18n', 'settings.password.submit');
+        newSubmit.textContent = I18N.get('settings.password.submit');
+
+        function tryAuth() {
+            if (settingsPassword.value === ADMIN_PASSWORD) {
+                settingsUnlocked = true;
+                settingsAuthModal.classList.remove('show');
+                onSuccess();
+            } else {
+                settingsPasswordError.style.display = 'block';
+                settingsPasswordError.textContent = I18N.get('settings.password.error');
+                settingsPassword.style.borderColor = '#ef4444';
+                setTimeout(() => { settingsPassword.style.borderColor = '#e5e7eb'; }, 1500);
+            }
+        }
+        newSubmit.addEventListener('click', tryAuth);
+        settingsPassword.addEventListener('keydown', function onKey(e) {
+            if (e.key === 'Enter') { tryAuth(); e.preventDefault(); }
+            if (e.key === 'Escape') {
+                settingsAuthModal.classList.remove('show');
+                settingsPassword.removeEventListener('keydown', onKey);
+            }
+        });
+    }
+
+    document.getElementById('closeSettingsAuth')?.addEventListener('click', () => {
+        settingsAuthModal.classList.remove('show');
+    });
+    window.addEventListener('click', (e) => {
+        if (e.target === settingsAuthModal) settingsAuthModal.classList.remove('show');
+    });
+
+    /* Bind sidebar navigation with settings auth check */
+    document.querySelectorAll('.sidebar-menu a[data-section]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const sectionId = link.dataset.section;
+            if (sectionId === 'settings-section' && !settingsUnlocked) {
+                openSettingsAuth(() => showSection('settings-section'));
+            } else {
+                showSection(sectionId);
+            }
+        });
+    });
+
+    /* Settings save/reset buttons require auth */
+    document.getElementById('btnSettingsSave')?.addEventListener('click', () => {
+        if (!settingsUnlocked) {
+            openSettingsAuth(() => showToast(I18N.get('settings.save.ok'), 'success'));
+        } else {
+            showToast(I18N.get('settings.save.ok'), 'success');
+        }
+    });
+    document.getElementById('btnSettingsReset')?.addEventListener('click', () => {
+        if (!settingsUnlocked) {
+            openSettingsAuth(() => showToast(I18N.get('settings.reset.ok'), 'info'));
+        } else {
+            showToast(I18N.get('settings.reset.ok'), 'info');
+        }
+    });
 
     /* ── Settings Section ───────────────────── */
     const syncEl = document.getElementById('lastSync');
@@ -647,6 +750,29 @@ document.addEventListener('DOMContentLoaded', () => {
         a.click();
         URL.revokeObjectURL(url);
         showToast('CSV 파일이 다운로드되었습니다.', 'success');
+    });
+
+    /* ── Language Change: re-render dynamic content ── */
+    document.addEventListener('langchange', () => {
+        // Re-render cattle table with current filter state
+        applyFilters();
+        // Re-render alerts
+        const alertTbody = document.getElementById('alertTableBody');
+        const isEmpty = alertTbody && alertTbody.children.length === 1 &&
+                        alertTbody.querySelector('td[colspan]');
+        if (isEmpty) {
+            buildAlertRows([]);
+        } else {
+            buildAlertRows(allAlerts);
+            updateAlertCount(allAlerts.length);
+        }
+        // Re-render reports
+        buildReports();
+        // Update map count
+        document.getElementById('mapCowCount').querySelector('span').textContent =
+            I18N.get('map.count').replace('{n}', TOTAL);
+        // Update clock
+        updateTime();
     });
 
     /* ── Toast Notification ─────────────────── */
