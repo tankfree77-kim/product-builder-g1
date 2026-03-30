@@ -379,7 +379,7 @@ section .section-label { display: block; text-align: center; }
 .two-col.reverse { direction: rtl; }
 .two-col.reverse > * { direction: ltr; }
 .image-content { height: 420px; border-radius: 24px; box-shadow: var(--shadow-xl); position: relative; overflow: hidden; }
-.bg-placeholder1 { background: url('https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=800&q=80') center/cover; }
+.bg-placeholder1 { background: url('https://images.unsplash.com/photo-1546445317-29f4545e9d53?w=800&q=80') center/cover; }
 .bg-placeholder2 { background: url('https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=800&q=80') center/cover; }
 .image-badge-overlay { position: absolute; bottom: 1.5rem; left: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
 .img-badge {
