@@ -23,6 +23,16 @@ const I18N = {
       'hero.btn'     : '<i class="fa-solid fa-rocket"></i> 제품 살펴보기',
       'hero.iot.live': 'LIVE &nbsp;·&nbsp; BOVICARE 이어태그 네트워크',
 
+      /* IoT Diagram */
+      'iot.status.normal' : 'NORMAL',
+      'iot.status.heat'   : 'HEAT',
+      'iot.status.urgent' : 'URGENT!',
+      'iot.status.estrus' : 'ESTRUS',
+      'iot.base.range'    : '2.4km 범위',
+      'iot.cloud.status'  : '실시간 분석 중',
+      'iot.mobile.sub'    : '긴급 알림',
+      'iot.tablet.sub'    : '대시보드',
+
       /* Stats Ticker */
       'stats.tags'      : '활성 이어태그',
       'stats.ranches'   : '파트너 목장',
@@ -357,6 +367,17 @@ const I18N = {
       'hero.p'       : 'One smart ear tag monitors your cattle\'s health, location, and estrus 24/7.<br>The IoT platform trusted by ranches in 30+ countries worldwide.',
       'hero.btn'     : '<i class="fa-solid fa-rocket"></i> Explore Products',
       'hero.iot.live': 'LIVE &nbsp;·&nbsp; BOVICARE EAR TAG NETWORK',
+
+      /* IoT Diagram */
+      'iot.status.normal' : 'NORMAL',
+      'iot.status.heat'   : 'HEAT',
+      'iot.status.urgent' : 'URGENT!',
+      'iot.status.estrus' : 'ESTRUS',
+      'iot.base.range'    : '2.4km Range',
+      'iot.cloud.status'  : 'Analyzing Real-time',
+      'iot.mobile.sub'    : 'Urgent Alerts',
+      'iot.tablet.sub'    : 'Dashboard',
+
       'stats.tags'      : 'Active EAR TAGs',
       'stats.ranches'   : 'Partner Ranches',
       'stats.countries' : 'Countries Served',
@@ -646,6 +667,17 @@ const I18N = {
       'hero.p'       : 'Un pequeño tag en la oreja monitorea la salud, ubicación y estro de su ganado las 24 horas.<br>La plataforma IoT en la que confían ranchos de más de 30 países.',
       'hero.btn'     : '<i class="fa-solid fa-rocket"></i> Explorar Productos',
       'hero.iot.live': 'EN VIVO &nbsp;·&nbsp; RED DE ETIQUETAS BOVICARE',
+
+      /* IoT Diagram */
+      'iot.status.normal' : 'NORMAL',
+      'iot.status.heat'   : 'CALOR',
+      'iot.status.urgent' : '¡URGENTE!',
+      'iot.status.estrus' : 'ESTRO',
+      'iot.base.range'    : 'Rango 2.4km',
+      'iot.cloud.status'  : 'Analizando...',
+      'iot.mobile.sub'    : 'Alerta Urgente',
+      'iot.tablet.sub'    : 'Panel',
+
       'stats.tags'      : 'Tags Activos',
       'stats.ranches'   : 'Ranchos Socios',
       'stats.countries' : 'Países Atendidos',
@@ -935,6 +967,17 @@ const I18N = {
       'hero.p'       : '耳に付けた小さなスマートタグ一つで、牛の健康・位置・発情を24時間リアルタイム監視。<br>世界30カ国以上の牧場に信頼されるIoTプラットフォーム。',
       'hero.btn'     : '<i class="fa-solid fa-rocket"></i> 製品を見る',
       'hero.iot.live': 'ライブ &nbsp;·&nbsp; BOVICARE 耳タグネットワーク',
+
+      /* IoT Diagram */
+      'iot.status.normal' : '正常',
+      'iot.status.heat'   : 'ヒート',
+      'iot.status.urgent' : '緊急!',
+      'iot.status.estrus' : '発情',
+      'iot.base.range'    : '2.4km 範囲',
+      'iot.cloud.status'  : 'リアルタイム分析中',
+      'iot.mobile.sub'    : '緊急通知',
+      'iot.tablet.sub'    : 'ダッシュボード',
+
       'stats.tags'      : 'アクティブ耳タグ',
       'stats.ranches'   : 'パートナー牧場',
       'stats.countries' : 'サービス国数',
@@ -1227,6 +1270,16 @@ const I18N = {
       'hero.p'       : '一个智能耳标全天候监测您的牛只健康、位置和发情。<br>来自全球30多个国家牧场信赖的物联网平台。',
       'hero.btn'     : '<i class="fa-solid fa-rocket"></i> 了解产品',
       'hero.iot.live': '直播 &nbsp;·&nbsp; BOVICARE 耳标网络',
+
+      /* IoT Diagram */
+      'iot.status.normal' : '正常',
+      'iot.status.heat'   : '发情',
+      'iot.status.urgent' : '紧急!',
+      'iot.status.estrus' : '发情期',
+      'iot.base.range'    : '2.4km范围',
+      'iot.cloud.status'  : '实时分析中',
+      'iot.mobile.sub'    : '紧急提醒',
+      'iot.tablet.sub'    : '仪表板',
 
       /* Stats Ticker */
       'stats.tags'      : '活跃耳标',
