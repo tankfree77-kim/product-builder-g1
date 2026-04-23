@@ -60,220 +60,32 @@
             <!-- ── Right: Animated IoT Diagram ── -->
             <div class="hero-iot-panel">
                 <div class="iot-card">
-                    <!-- Header bar -->
-                    <div class="iot-card-header">
-                        <span class="iot-live-dot"></span>
-                        <span data-i18n="hero.iot.live">LIVE &nbsp;·&nbsp; BOVICARE 이어태그 네트워크</span>
-                        <span class="iot-time" id="iotTime">00:00:00</span>
+                    <!-- IoT Diagram: original image + translatable text overlay -->
+                    <div class="iot-img-wrap">
+                        <img src="cow image1.png" alt="BOVICARE IoT Diagram" class="iot-full-img">
+                        <div class="iot-overlay">
+
+                            <!-- Header: covers baked-in image header with live clock + i18n -->
+                            <div class="iol-hdr">
+                                <span class="iot-live-dot"></span>
+                                <span data-i18n="hero.iot.live">LIVE &nbsp;·&nbsp; BOVICARE 이어태그 네트워크</span>
+                                <span class="iot-time" id="iotTime">00:00:00</span>
+                            </div>
+
+                            <!-- Status labels (positioned over image text) -->
+                            <span class="iol-lbl iol-normal" data-i18n="iot.status.normal">NORMAL</span>
+                            <span class="iol-lbl iol-heat"   data-i18n="iot.status.heat">HEAT</span>
+                            <span class="iol-lbl iol-urgent" data-i18n="iot.status.urgent">URGENT!</span>
+                            <span class="iol-lbl iol-estrus" data-i18n="iot.status.estrus">ESTRUS</span>
+
+                            <!-- Card sub-texts (positioned over image text) -->
+                            <span class="iol-sub iol-base"   data-i18n="iot.base.range">2.4km 범위</span>
+                            <span class="iol-sub iol-cloud"  data-i18n="iot.cloud.status">실시간 분석 중</span>
+                            <span class="iol-sub iol-mobile" data-i18n="iot.mobile.sub">긴급 알림</span>
+                            <span class="iol-sub iol-tablet" data-i18n="iot.tablet.sub">대시보드</span>
+
+                        </div>
                     </div>
-
-                    <!-- ── Cows Row ── -->
-                    <div class="iot-field-row">
-
-                        <!-- Cow 1: NORMAL -->
-                        <div class="iot-cow">
-                            <div class="iot-cow-body">
-                                <div class="iot-signal-wrap">
-                                    <div class="iot-signal-ring r1 normal-ring"></div>
-                                    <div class="iot-signal-ring r2 normal-ring"></div>
-                                    <div class="iot-signal-ring r3 normal-ring"></div>
-                                </div>
-                                <svg class="cow-svg" viewBox="0 0 90 65" xmlns="http://www.w3.org/2000/svg">
-                                    <ellipse cx="52" cy="38" rx="28" ry="18" fill="#c9b49a"/>
-                                    <ellipse cx="55" cy="32" rx="11" ry="9" fill="rgba(40,20,5,0.18)"/>
-                                    <circle cx="15" cy="27" r="12" fill="#c9b49a"/>
-                                    <ellipse cx="7" cy="31" rx="7" ry="5.5" fill="#b89878"/>
-                                    <circle cx="5" cy="32" r="1.5" fill="#7a5538"/>
-                                    <circle cx="10" cy="32" r="1.5" fill="#7a5538"/>
-                                    <circle cx="14" cy="23" r="2.8" fill="#1a0a00"/>
-                                    <circle cx="13.5" cy="22.5" r="0.9" fill="white"/>
-                                    <path d="M22 17 Q27 9 33 14" stroke="#d4b890" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-                                    <ellipse cx="24" cy="18" rx="5" ry="3.5" transform="rotate(-25 24 18)" fill="#d8c4a0"/>
-                                    <rect x="25" y="13" width="8" height="5" rx="1.5" fill="#10b981"/>
-                                    <rect x="30" y="52" width="6" height="11" rx="3" fill="#a88870"/>
-                                    <rect x="42" y="52" width="6" height="11" rx="3" fill="#a88870"/>
-                                    <rect x="55" y="52" width="6" height="11" rx="3" fill="#a88870"/>
-                                    <rect x="67" y="52" width="6" height="11" rx="3" fill="#a88870"/>
-                                    <ellipse cx="57" cy="56" rx="9" ry="4" fill="#ddb8a8"/>
-                                    <path d="M80 36 Q88 30 86 43" stroke="#c9b49a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-                                </svg>
-                            </div>
-                            <span class="iot-status-label normal-lbl" data-i18n="iot.status.normal">NORMAL</span>
-                        </div>
-
-                        <!-- Cow 2: HEAT -->
-                        <div class="iot-cow">
-                            <div class="iot-cow-body">
-                                <div class="iot-signal-wrap">
-                                    <div class="iot-signal-ring r1 heat-ring"></div>
-                                    <div class="iot-signal-ring r2 heat-ring"></div>
-                                    <div class="iot-signal-ring r3 heat-ring"></div>
-                                </div>
-                                <svg class="cow-svg" viewBox="0 0 90 65" xmlns="http://www.w3.org/2000/svg">
-                                    <ellipse cx="52" cy="38" rx="28" ry="18" fill="#c9b49a"/>
-                                    <ellipse cx="48" cy="33" rx="9" ry="8" fill="rgba(40,20,5,0.18)"/>
-                                    <circle cx="15" cy="27" r="12" fill="#c9b49a"/>
-                                    <ellipse cx="7" cy="31" rx="7" ry="5.5" fill="#b89878"/>
-                                    <circle cx="5" cy="32" r="1.5" fill="#7a5538"/>
-                                    <circle cx="10" cy="32" r="1.5" fill="#7a5538"/>
-                                    <circle cx="14" cy="23" r="2.8" fill="#1a0a00"/>
-                                    <circle cx="13.5" cy="22.5" r="0.9" fill="white"/>
-                                    <path d="M22 17 Q27 9 33 14" stroke="#d4b890" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-                                    <ellipse cx="24" cy="18" rx="5" ry="3.5" transform="rotate(-25 24 18)" fill="#d8c4a0"/>
-                                    <rect x="25" y="13" width="8" height="5" rx="1.5" fill="#f59e0b"/>
-                                    <rect x="30" y="52" width="6" height="11" rx="3" fill="#a88870"/>
-                                    <rect x="42" y="52" width="6" height="11" rx="3" fill="#a88870"/>
-                                    <rect x="55" y="52" width="6" height="11" rx="3" fill="#a88870"/>
-                                    <rect x="67" y="52" width="6" height="11" rx="3" fill="#a88870"/>
-                                    <ellipse cx="57" cy="56" rx="9" ry="4" fill="#ddb8a8"/>
-                                    <path d="M80 36 Q88 30 86 43" stroke="#c9b49a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-                                </svg>
-                            </div>
-                            <span class="iot-status-label heat-lbl" data-i18n="iot.status.heat">HEAT</span>
-                        </div>
-
-                        <!-- Cow 3: URGENT! -->
-                        <div class="iot-cow">
-                            <div class="iot-cow-body">
-                                <div class="iot-signal-wrap">
-                                    <div class="iot-signal-ring r1 urgent-ring"></div>
-                                    <div class="iot-signal-ring r2 urgent-ring"></div>
-                                    <div class="iot-signal-ring r3 urgent-ring"></div>
-                                </div>
-                                <svg class="cow-svg" viewBox="0 0 90 65" xmlns="http://www.w3.org/2000/svg">
-                                    <ellipse cx="52" cy="38" rx="28" ry="18" fill="#c9b49a"/>
-                                    <ellipse cx="60" cy="34" rx="10" ry="8" fill="rgba(40,20,5,0.18)"/>
-                                    <circle cx="15" cy="27" r="12" fill="#c9b49a"/>
-                                    <ellipse cx="7" cy="31" rx="7" ry="5.5" fill="#b89878"/>
-                                    <circle cx="5" cy="32" r="1.5" fill="#7a5538"/>
-                                    <circle cx="10" cy="32" r="1.5" fill="#7a5538"/>
-                                    <circle cx="14" cy="23" r="2.8" fill="#1a0a00"/>
-                                    <circle cx="13.5" cy="22.5" r="0.9" fill="white"/>
-                                    <path d="M22 17 Q27 9 33 14" stroke="#d4b890" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-                                    <ellipse cx="24" cy="18" rx="5" ry="3.5" transform="rotate(-25 24 18)" fill="#d8c4a0"/>
-                                    <rect x="25" y="13" width="8" height="5" rx="1.5" fill="#ef4444"/>
-                                    <rect x="30" y="52" width="6" height="11" rx="3" fill="#a88870"/>
-                                    <rect x="42" y="52" width="6" height="11" rx="3" fill="#a88870"/>
-                                    <rect x="55" y="52" width="6" height="11" rx="3" fill="#a88870"/>
-                                    <rect x="67" y="52" width="6" height="11" rx="3" fill="#a88870"/>
-                                    <ellipse cx="57" cy="56" rx="9" ry="4" fill="#ddb8a8"/>
-                                    <path d="M80 36 Q88 30 86 43" stroke="#c9b49a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-                                </svg>
-                            </div>
-                            <span class="iot-status-label urgent-lbl" data-i18n="iot.status.urgent">URGENT!</span>
-                        </div>
-
-                        <!-- Cow 4: ESTRUS -->
-                        <div class="iot-cow">
-                            <div class="iot-cow-body">
-                                <div class="iot-signal-wrap">
-                                    <div class="iot-signal-ring r1 heat-ring"></div>
-                                    <div class="iot-signal-ring r2 heat-ring"></div>
-                                    <div class="iot-signal-ring r3 heat-ring"></div>
-                                </div>
-                                <svg class="cow-svg" viewBox="0 0 90 65" xmlns="http://www.w3.org/2000/svg">
-                                    <ellipse cx="52" cy="38" rx="28" ry="18" fill="#c9b49a"/>
-                                    <ellipse cx="52" cy="36" rx="8" ry="7" fill="rgba(40,20,5,0.18)"/>
-                                    <circle cx="15" cy="27" r="12" fill="#c9b49a"/>
-                                    <ellipse cx="7" cy="31" rx="7" ry="5.5" fill="#b89878"/>
-                                    <circle cx="5" cy="32" r="1.5" fill="#7a5538"/>
-                                    <circle cx="10" cy="32" r="1.5" fill="#7a5538"/>
-                                    <circle cx="14" cy="23" r="2.8" fill="#1a0a00"/>
-                                    <circle cx="13.5" cy="22.5" r="0.9" fill="white"/>
-                                    <path d="M22 17 Q27 9 33 14" stroke="#d4b890" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-                                    <ellipse cx="24" cy="18" rx="5" ry="3.5" transform="rotate(-25 24 18)" fill="#d8c4a0"/>
-                                    <rect x="25" y="13" width="8" height="5" rx="1.5" fill="#8b5cf6"/>
-                                    <rect x="30" y="52" width="6" height="11" rx="3" fill="#a88870"/>
-                                    <rect x="42" y="52" width="6" height="11" rx="3" fill="#a88870"/>
-                                    <rect x="55" y="52" width="6" height="11" rx="3" fill="#a88870"/>
-                                    <rect x="67" y="52" width="6" height="11" rx="3" fill="#a88870"/>
-                                    <ellipse cx="57" cy="56" rx="9" ry="4" fill="#ddb8a8"/>
-                                    <path d="M80 36 Q88 30 86 43" stroke="#c9b49a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-                                </svg>
-                            </div>
-                            <span class="iot-status-label heat-lbl" style="background:rgba(139,92,246,0.18);color:#5b21b6;" data-i18n="iot.status.estrus">ESTRUS</span>
-                        </div>
-
-                    </div><!-- /iot-field-row -->
-
-                    <!-- ── Converging signal lines ── -->
-                    <div class="iot-flow-row">
-                        <svg class="converge-svg" viewBox="0 0 340 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <line x1="42"  y1="0" x2="170" y2="40" stroke="#10b981" stroke-width="1.5" stroke-dasharray="5 3" opacity="0.6"/>
-                            <line x1="128" y1="0" x2="170" y2="40" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="5 3" opacity="0.6"/>
-                            <line x1="213" y1="0" x2="170" y2="40" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="5 3" opacity="0.6"/>
-                            <line x1="298" y1="0" x2="170" y2="40" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="5 3" opacity="0.6"/>
-                            <circle cx="170" cy="40" r="4" fill="#10b981" opacity="0.9"/>
-                        </svg>
-                    </div>
-
-                    <!-- ── Base Station ── -->
-                    <div class="iot-node-box station-box">
-                        <div class="iot-node-icon station-icon"><i class="fa-solid fa-tower-broadcast"></i></div>
-                        <div class="iot-node-label">
-                            <strong>Base Station</strong>
-                            <span data-i18n="iot.base.range">2.4km 범위</span>
-                        </div>
-                        <div class="iot-node-dot green-dot pulse-dot"></div>
-                    </div>
-
-                    <!-- ── Vertical flow: Base → Cloud ── -->
-                    <div class="iot-vertical-flow">
-                        <svg class="vert-svg" viewBox="0 0 20 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <line x1="10" y1="0" x2="10" y2="28" stroke="#10b981" stroke-width="2" stroke-dasharray="4 3"/>
-                            <polygon points="5,26 10,36 15,26" fill="#10b981"/>
-                        </svg>
-                    </div>
-
-                    <!-- ── Cloud AI Server ── -->
-                    <div class="iot-node-box cloud-box">
-                        <div class="iot-node-icon cloud-icon"><i class="fa-solid fa-cloud"></i></div>
-                        <div class="iot-node-label">
-                            <strong>Cloud AI Server</strong>
-                            <span data-i18n="iot.cloud.status">실시간 분석 중</span>
-                        </div>
-                        <div class="iot-node-dot blue-dot pulse-dot"></div>
-                    </div>
-
-                    <!-- ── Branch flow: Cloud → Devices ── -->
-                    <div class="iot-branch-flow">
-                        <svg class="branch-svg" viewBox="0 0 260 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <line x1="130" y1="0" x2="130" y2="12" stroke="#60a5fa" stroke-width="2" stroke-dasharray="4 3"/>
-                            <line x1="130" y1="12" x2="65"  y2="12" stroke="#60a5fa" stroke-width="2" stroke-dasharray="4 3"/>
-                            <line x1="130" y1="12" x2="195" y2="12" stroke="#60a5fa" stroke-width="2" stroke-dasharray="4 3"/>
-                            <line x1="65"  y1="12" x2="65"  y2="32" stroke="#60a5fa" stroke-width="2" stroke-dasharray="4 3"/>
-                            <line x1="195" y1="12" x2="195" y2="32" stroke="#60a5fa" stroke-width="2" stroke-dasharray="4 3"/>
-                        </svg>
-                    </div>
-
-                    <!-- ── Devices Row ── -->
-                    <div class="iot-devices-row">
-
-                        <!-- Mobile -->
-                        <div class="iot-device-box">
-                            <div class="iot-device-icon">
-                                <i class="fa-solid fa-mobile-screen" style="font-size:1.6rem; color:#065f46;"></i>
-                                <div class="device-alert-badge urgent-badge">!</div>
-                            </div>
-                            <div class="device-label">
-                                <strong>Mobile</strong>
-                                <span data-i18n="iot.mobile.sub">긴급 알림</span>
-                            </div>
-                        </div>
-
-                        <!-- Tablet -->
-                        <div class="iot-device-box">
-                            <div class="iot-device-icon">
-                                <i class="fa-solid fa-tablet-screen-button" style="font-size:1.6rem; color:#065f46;"></i>
-                                <div class="device-alert-badge info-badge">i</div>
-                            </div>
-                            <div class="device-label">
-                                <strong>Tablet</strong>
-                                <span data-i18n="iot.tablet.sub">대시보드</span>
-                            </div>
-                        </div>
-
-                    </div><!-- /iot-devices-row -->
 
                 </div><!-- /iot-card -->
             </div><!-- /hero-iot-panel -->
