@@ -8,12 +8,28 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateTime() {
         const now = new Date();
         const lang = I18N.currentLang;
-        const locale = lang === 'ko' ? 'ko-KR' : lang === 'ja' ? 'ja-JP' : lang === 'es' ? 'es-ES' : 'en-US';
+        const locale = lang === 'ko' ? 'ko-KR' : lang === 'ja' ? 'ja-JP' : lang === 'es' ? 'es-ES' : lang === 'zh' ? 'zh-CN' : 'en-US';
         document.getElementById('lastUpdate').textContent =
             I18N.get('clock.update') + now.toLocaleTimeString(locale);
     }
     updateTime();
     setInterval(updateTime, 10000);
+
+    /* ── Processed Alert State ──────────────── */
+    const processedAlerts = new Set(
+        JSON.parse(localStorage.getItem('bovicare_processed') || '[]')
+    );
+
+    function isProcessed(cowId) {
+        return processedAlerts.has(cowId);
+    }
+
+    function markProcessed(cowId) {
+        processedAlerts.add(cowId);
+        localStorage.setItem('bovicare_processed', JSON.stringify([...processedAlerts]));
+        refreshAllAlertViews();
+        showToast(I18N.get('alert.process.ok'), 'success');
+    }
 
     /* ── Data Definitions ───────────────────── */
     const breedData = [
@@ -43,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ── Generate Mock Data ─────────────────── */
     const TOTAL = 120;
-    const centerLat = 35.8514; // 경북 영천 (Yeongcheon, GyeongBuk)
+    const centerLat = 35.8514;
     const centerLng = 128.9382;
 
     let stats = { Bull: 0, Cow: 0, Calf: 0, Steer: 0, urgent: 0 };
@@ -61,14 +77,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const breedKey   = breedEntry.key;
         const isKorean   = breedEntry.isKorean;
 
-        // Calves can be either gender
         let gender = typeInfo.gender;
         if (typeKey === 'Calf') gender = Math.random() > 0.5 ? '수컷' : '암컷';
 
         const lat = centerLat + (Math.random() - 0.5) * 0.006;
         const lng = centerLng + (Math.random() - 0.5) * 0.007;
 
-        // Body temperature: Normal 38.0-39.0, Urgent slightly higher
         const baseTemp = 38.0 + Math.random() * 1.0;
         const temp = status === 'Urgent' ? (39.2 + Math.random() * 0.8).toFixed(1)
                    : status === 'Heat'   ? (38.8 + Math.random() * 0.4).toFixed(1)
@@ -104,15 +118,25 @@ document.addEventListener('DOMContentLoaded', () => {
     /* Sort: Urgent → Heat → Normal */
     cowsData.sort((a, b) => STATUS_PRIORITY[a.status] - STATUS_PRIORITY[b.status]);
 
+    /* Pre-compute alert timestamps (fixed, won't change on re-render) */
+    const alertTimestamps = new Map();
+    const now = new Date();
+    cowsData.forEach(cow => {
+        if (cow.status === 'Urgent' || cow.status === 'Heat') {
+            const minsAgo = Math.floor(Math.random() * 1440);
+            alertTimestamps.set(cow.id, new Date(now - minsAgo * 60000));
+        }
+    });
+
     /* ── Animated Stat Counters ─────────────── */
-    function animateCount(el, target, suffix = '') {
+    function animateCount(el, target) {
         const duration = 1200;
         const steps    = 50;
         const increment = target / steps;
         let current = 0;
         const timer = setInterval(() => {
             current = Math.min(current + increment, target);
-            el.textContent = Math.floor(current) + suffix;
+            el.textContent = Math.floor(current);
             if (current >= target) clearInterval(timer);
         }, duration / steps);
     }
@@ -124,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     animateCount(document.getElementById('count-urgent'), stats.urgent);
     document.getElementById('total-cows').textContent = TOTAL;
 
-    /* Alert banner count */
+    /* Alert banner */
     if (stats.urgent > 0) {
         document.getElementById('alertBanner').style.display = '';
         document.getElementById('notifDot').style.display = 'block';
@@ -146,14 +170,11 @@ document.addEventListener('DOMContentLoaded', () => {
     );
     tileNormal.addTo(map);
 
-    /* Force Leaflet to recalculate map container size after layout paint */
     setTimeout(() => { map.invalidateSize(); }, 150);
-    /* Also re-invalidate when main content scrolls (sidebar menu links) */
     document.querySelector('.main-content')?.addEventListener('scroll', () => {
         map.invalidateSize();
     });
 
-    /* Map layer toggle */
     document.getElementById('btnNormal').addEventListener('click', function() {
         map.removeLayer(tileSatellite);
         tileNormal.addTo(map);
@@ -179,17 +200,12 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     let geofenceLayer = L.polygon(geofenceCoords, {
-        color: '#0D8ABC',
-        weight: 2.5,
-        fillColor: '#0D8ABC',
-        fillOpacity: 0.08,
-        dashArray: '6, 8',
+        color: '#0D8ABC', weight: 2.5,
+        fillColor: '#0D8ABC', fillOpacity: 0.08, dashArray: '6, 8',
     }).addTo(map);
     geofenceLayer.bindTooltip('목장 Geofence 경계', { permanent: false, direction: 'top' });
 
-    /* ── Leaflet.draw for Geofence Editing ───── */
     const drawnItems = new L.FeatureGroup().addTo(map);
-
     const drawControl = new L.Control.Draw({
         edit: { featureGroup: drawnItems, edit: true, remove: true },
         draw: {
@@ -208,8 +224,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!editMode) {
             editMode = true;
             map.addControl(drawControl);
-
-            // Load existing geofence into drawnItems for editing
             drawnItems.clearLayers();
             drawnItems.addLayer(
                 L.polygon(geofenceCoords, {
@@ -218,7 +232,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             );
             map.removeLayer(geofenceLayer);
-
             document.getElementById('geofence-status-bar').style.display = 'flex';
             document.getElementById('btnGeofenceSave').style.display     = 'inline-flex';
             document.getElementById('btnGeofenceEdit').innerHTML = '<i class="fa-solid fa-xmark"></i> 편집 취소';
@@ -261,10 +274,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const markerLayer = L.layerGroup().addTo(map);
 
     function makeMarkerIcon(cow) {
-        const color = cow.status === 'Urgent' ? '#ef4444'
+        const processed = isProcessed(cow.id);
+        const color = processed ? '#6b7280'
+                    : cow.status === 'Urgent' ? '#ef4444'
                     : cow.status === 'Heat'   ? '#f59e0b'
                     : '#10b981';
-        const pulse = cow.status === 'Urgent'
+        const pulse = (!processed && cow.status === 'Urgent')
             ? 'animation:pulse 1.2s infinite;'
             : '';
         return L.divIcon({
@@ -281,14 +296,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function buildPopup(cow) {
-        const statusColor = cow.status === 'Urgent' ? '#b91c1c' : cow.status === 'Heat' ? '#b45309' : '#047857';
+        const processed = isProcessed(cow.id);
+        const isAlert = cow.status === 'Urgent' || cow.status === 'Heat';
+        const statusColor = processed ? '#047857'
+                          : cow.status === 'Urgent' ? '#b91c1c'
+                          : cow.status === 'Heat'   ? '#b45309'
+                          : '#047857';
         const tempColor   = cow.temp > 39.2 ? '#b91c1c' : '#047857';
-        const statusLabel = cow.status === 'Urgent' ? I18N.get('status.urgent.short')
+        const statusLabel = processed ? I18N.get('alert.processed')
+                          : cow.status === 'Urgent' ? I18N.get('status.urgent.short')
                           : cow.status === 'Heat'   ? I18N.get('status.heat.short')
                           : I18N.get('status.normal');
         const typeLabel   = I18N.get('type.' + cow.typeKey.toLowerCase());
         const genderLabel = cow.gender === '수컷' ? I18N.get('gender.male') : I18N.get('gender.female');
         const breedLabel  = I18N.get('breed.' + cow.breedKey);
+
+        let actionHtml = '';
+        if (isAlert) {
+            if (processed) {
+                actionHtml = `<div style="margin-top:8px;padding-top:8px;border-top:1px solid #e5e7eb;">
+                    <span style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.3rem 0.8rem;
+                        background:#d1fae5;color:#047857;border-radius:999px;font-weight:700;font-size:0.78rem;">
+                        <i class="fa-solid fa-circle-check"></i> ${I18N.get('alert.processed')}
+                    </span>
+                </div>`;
+            } else {
+                actionHtml = `<div style="margin-top:8px;padding-top:8px;border-top:1px solid #e5e7eb;">
+                    <button onclick="window.__boviProcessAlert('${cow.id}')" style="
+                        background:#ef4444;color:white;border:none;padding:0.35rem 1rem;
+                        border-radius:6px;font-weight:700;font-size:0.8rem;cursor:pointer;
+                        font-family:Inter,sans-serif;width:100%;">
+                        <i class="fa-solid fa-check-circle"></i> ${I18N.get('alert.process')}
+                    </button>
+                </div>`;
+            }
+        }
+
         return `
             <div style="font-family:Inter,sans-serif;min-width:200px;">
                 <div style="font-size:1rem;font-weight:700;margin-bottom:6px;">${cow.name}</div>
@@ -303,17 +346,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div style="font-size:0.75rem;color:#9ca3af;margin-top:8px;">
                     📍 ${cow.lat.toFixed(5)}, ${cow.lng.toFixed(5)}
                 </div>
+                ${actionHtml}
             </div>`;
     }
 
-    cowsData.forEach(cow => {
-        L.marker([cow.lat, cow.lng], {
-            icon: makeMarkerIcon(cow),
-            zIndexOffset: cow.status === 'Urgent' ? 1000 : cow.status === 'Heat' ? 500 : 0,
-        })
-        .bindPopup(buildPopup(cow), { maxWidth: 240 })
-        .addTo(markerLayer);
-    });
+    /* Global function for map popup buttons */
+    window.__boviProcessAlert = function(cowId) {
+        markProcessed(cowId);
+        map.closePopup();
+    };
+
+    function buildMapMarkers() {
+        markerLayer.clearLayers();
+        cowsData.forEach(cow => {
+            L.marker([cow.lat, cow.lng], {
+                icon: makeMarkerIcon(cow),
+                zIndexOffset: cow.status === 'Urgent' ? 1000 : cow.status === 'Heat' ? 500 : 0,
+            })
+            .bindPopup(buildPopup(cow), { maxWidth: 260 })
+            .addTo(markerLayer);
+        });
+    }
+    buildMapMarkers();
 
     document.getElementById('mapCowCount').querySelector('span').textContent =
         I18N.get('map.count').replace('{n}', TOTAL);
@@ -337,6 +391,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         data.forEach(cow => {
             const tr = document.createElement('tr');
+            const processed = isProcessed(cow.id);
+            const isAlert = cow.status === 'Urgent' || cow.status === 'Heat';
 
             let badgeClass = 'badge-normal';
             let statusLabel = `<i class="fa-solid fa-circle-check"></i> ${I18N.get('status.normal')}`;
@@ -348,6 +404,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 statusLabel = `<i class="fa-solid fa-fire"></i> ${I18N.get('status.heat')}`;
             }
 
+            const processedTag = (isAlert && processed)
+                ? `<span class="badge-processed-sm"><i class="fa-solid fa-check"></i> ${I18N.get('alert.processed')}</span>`
+                : '';
+
             const typeDisplay   = I18N.get('type.' + cow.typeKey.toLowerCase());
             const genderDisplay = cow.gender === '수컷' ? I18N.get('gender.male') : I18N.get('gender.female');
             const breedDisplay  = I18N.get('breed.' + cow.breedKey);
@@ -356,7 +416,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const breedClass = cow.isKorean ? 'breed-badge' : 'breed-badge foreign';
 
             tr.innerHTML = `
-                <td><span class="badge-status ${badgeClass}">${statusLabel}</span></td>
+                <td>
+                    <span class="badge-status ${badgeClass}">${statusLabel}</span>
+                    ${processedTag}
+                </td>
                 <td>
                     <strong style="font-family:monospace;font-size:0.85rem;">${cow.id}</strong><br>
                     <span class="text-xs text-gray" style="font-family:monospace;">${cow.mac}</span>
@@ -377,7 +440,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </td>
             `;
 
-            /* Click row → open detail modal */
             tr.addEventListener('click', (e) => {
                 if (!e.target.closest('.btn-detail')) openDetail(cow);
             });
@@ -438,21 +500,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const detailContent = document.getElementById('detailContent');
 
     function openDetail(cow) {
-        const bgColor = cow.status === 'Urgent' ? '#fee2e2'
-                      : cow.status === 'Heat'   ? '#fef3c7'
-                      : '#d1fae5';
-        const iconColor = cow.status === 'Urgent' ? '#ef4444'
-                        : cow.status === 'Heat'   ? '#f59e0b'
+        const processed = isProcessed(cow.id);
+        const isAlert = cow.status === 'Urgent' || cow.status === 'Heat';
+
+        const bgColor = (isAlert && !processed) ? (cow.status === 'Urgent' ? '#fee2e2' : '#fef3c7')
+                      : processed ? '#d1fae5' : '#d1fae5';
+        const iconColor = (isAlert && !processed) ? (cow.status === 'Urgent' ? '#ef4444' : '#f59e0b')
                         : '#10b981';
         const icon = cow.typeKey === 'Bull' ? '♂' : cow.typeKey === 'Cow' ? '♀' : cow.typeKey === 'Calf' ? '◎' : '✦';
 
-        const statusLabel = cow.status === 'Urgent' ? I18N.get('status.urgent.short')
+        const statusLabel = processed && isAlert ? I18N.get('alert.processed')
+                          : cow.status === 'Urgent' ? I18N.get('status.urgent.short')
                           : cow.status === 'Heat'   ? I18N.get('status.heat.short')
                           : I18N.get('status.normal');
         const typeDisplay   = I18N.get('type.' + cow.typeKey.toLowerCase());
         const genderDisplay = cow.gender === '수컷' ? I18N.get('gender.male') : I18N.get('gender.female');
         const monthUnit     = I18N.get('unit.months');
         const yearUnit      = I18N.get('unit.years');
+
+        let processFooter = '';
+        if (isAlert) {
+            if (processed) {
+                processFooter = `<span class="badge-processed">
+                    <i class="fa-solid fa-circle-check"></i> ${I18N.get('alert.processed')}
+                </span>`;
+            } else {
+                processFooter = `<button class="btn-process" id="btnProcessAlert">
+                    <i class="fa-solid fa-check-circle"></i> ${I18N.get('alert.process')}
+                </button>`;
+            }
+        }
 
         detailContent.innerHTML = `
             <div class="detail-header">
@@ -474,86 +551,99 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="detail-row"><span class="detail-label">Tag ID</span><span class="detail-value" style="font-family:monospace;">${cow.id}</span></div>
                 <div class="detail-row"><span class="detail-label">MAC Address</span><span class="detail-value" style="font-family:monospace;font-size:0.9rem;">${cow.mac}</span></div>
             </div>
-            <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid #e5e7eb;">
-                <button class="btn-primary btn-sm" onclick="document.getElementById('detailModal').classList.remove('show')">
-                    ${I18N.get('detail.close')}
-                </button>
+            <div class="process-footer">
+                ${processFooter}
+                <button class="btn-outline btn-sm" id="btnCloseDetail">${I18N.get('detail.close')}</button>
             </div>
         `;
+
+        /* Bind process button */
+        document.getElementById('btnProcessAlert')?.addEventListener('click', () => {
+            markProcessed(cow.id);
+            detailModal.classList.remove('show');
+        });
+        document.getElementById('btnCloseDetail')?.addEventListener('click', () => {
+            detailModal.classList.remove('show');
+        });
+
         detailModal.classList.add('show');
     }
 
     closeDetail?.addEventListener('click', () => detailModal.classList.remove('show'));
     window.addEventListener('click', (e) => { if (e.target === detailModal) detailModal.classList.remove('show'); });
 
-    /* ── Sidebar Navigation (tab-switch, no scroll) ── */
+    /* ── Sidebar Navigation ─────────────────── */
     const SECTION_IDS = [
         'summary-section', 'map-section', 'table-section',
         'alerts-section', 'reports-section', 'settings-section', 'users-section'
     ];
 
     function showSection(sectionId) {
-        /* Hide all sections */
         SECTION_IDS.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.classList.remove('active');
         });
-        /* Show target section */
         const target = document.getElementById(sectionId);
         if (target) {
             target.classList.add('active');
-            /* Scroll main-content back to top so section is visible immediately */
             const mc = document.querySelector('.main-content');
             if (mc) mc.scrollTop = 0;
         }
-        /* Update sidebar active state */
         document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
         const activeLink = document.querySelector(`.sidebar-menu a[data-section="${sectionId}"]`);
         if (activeLink) activeLink.closest('li').classList.add('active');
 
-        /* Leaflet needs invalidateSize whenever its container becomes visible */
         if (sectionId === 'map-section') {
             setTimeout(() => { map.invalidateSize(); }, 50);
         }
     }
 
-    /* sidebar nav — auth-aware binding is set up below after openSettingsAuth is defined */
-
     /* ── Alerts Section ─────────────────────── */
     const urgentCows = cowsData.filter(c => c.status === 'Urgent');
     const heatCows   = cowsData.filter(c => c.status === 'Heat');
     const allAlerts  = [...urgentCows, ...heatCows];
+    let currentAlertList = [...allAlerts];
 
-    function updateAlertCount(count) {
+    function updateAlertCount(list) {
+        const unprocessed = list.filter(c => !isProcessed(c.id)).length;
         document.getElementById('alertCount').textContent =
-            I18N.get('alert.total').replace('{n}', count);
+            I18N.get('alert.total').replace('{n}', unprocessed);
     }
-    updateAlertCount(allAlerts.length);
+    updateAlertCount(allAlerts);
 
     function buildAlertRows(list) {
+        currentAlertList = list;
         const tbody = document.getElementById('alertTableBody');
         if (!tbody) return;
         tbody.innerHTML = '';
+        updateAlertCount(list);
+
         if (list.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:2rem;color:#9ca3af;">
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:2rem;color:#9ca3af;">
                 <i class="fa-solid fa-circle-check" style="color:#10b981;margin-right:0.5rem;"></i>${I18N.get('alert.none')}</td></tr>`;
             return;
         }
         const lang = I18N.currentLang;
-        const locale = lang === 'ko' ? 'ko-KR' : lang === 'ja' ? 'ja-JP' : lang === 'es' ? 'es-ES' : 'en-US';
-        const now = new Date();
+        const locale = lang === 'ko' ? 'ko-KR' : lang === 'ja' ? 'ja-JP' : lang === 'es' ? 'es-ES' : lang === 'zh' ? 'zh-CN' : 'en-US';
+
         list.forEach((cow) => {
+            const processed = isProcessed(cow.id);
             const isUrgent = cow.status === 'Urgent';
             const badgeClass = isUrgent ? 'badge-urgent' : 'badge-heat';
             const icon  = isUrgent ? '<i class="fa-solid fa-triangle-exclamation"></i>' : '<i class="fa-solid fa-fire"></i>';
             const label = isUrgent ? I18N.get('status.urgent.short') : I18N.get('status.heat.short');
             const typeDisplay   = I18N.get('type.' + cow.typeKey.toLowerCase());
             const genderDisplay = cow.gender === '수컷' ? I18N.get('gender.male') : I18N.get('gender.female');
-            const minsAgo = Math.floor(Math.random() * 1440);
-            const t = new Date(now - minsAgo * 60000);
+            const t = alertTimestamps.get(cow.id) || now;
             const timeStr = t.toLocaleTimeString(locale, { hour:'2-digit', minute:'2-digit' }) +
                             ' ' + t.toLocaleDateString(locale, { month:'2-digit', day:'2-digit' });
+
+            const actionCell = processed
+                ? `<span class="badge-processed"><i class="fa-solid fa-circle-check"></i> ${I18N.get('alert.processed')}</span>`
+                : `<button class="btn-confirm btn-alert-confirm">${I18N.get('alert.confirm')}</button>`;
+
             const tr = document.createElement('tr');
+            tr.style.opacity = processed ? '0.65' : '1';
             tr.innerHTML = `
                 <td><span class="badge-status ${badgeClass}">${icon} ${label}</span></td>
                 <td style="font-family:monospace;font-size:0.82rem;">${cow.id}</td>
@@ -562,7 +652,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="${cow.temp > 39.2 ? 'temp-high' : 'temp-normal'} temp-cell">${cow.temp}°C</td>
                 <td>${typeDisplay} · ${genderDisplay}</td>
                 <td class="text-gray" style="font-size:0.82rem;">${timeStr}</td>
-                <td class="text-gray" style="font-size:0.82rem;font-family:monospace;">${cow.lat.toFixed(4)}, ${cow.lng.toFixed(4)}</td>`;
+                <td class="text-gray" style="font-size:0.82rem;font-family:monospace;">${cow.lat.toFixed(4)}, ${cow.lng.toFixed(4)}</td>
+                <td>${actionCell}</td>
+            `;
+
+            /* Click row → open detail (unless clicking confirm btn) */
+            tr.addEventListener('click', (e) => {
+                if (!e.target.closest('.btn-alert-confirm')) openDetail(cow);
+            });
+            tr.querySelector('.btn-alert-confirm')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openDetail(cow);
+            });
+
             tbody.appendChild(tr);
         });
     }
@@ -570,9 +672,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btnClearAlerts')?.addEventListener('click', () => {
         buildAlertRows([]);
-        updateAlertCount(0);
         showToast(I18N.get('alert.clear.ok'), 'success');
     });
+
+    /* ── Refresh All Alert Views ────────────── */
+    function refreshAllAlertViews() {
+        buildAlertRows(currentAlertList);
+        buildMapMarkers();
+        applyFilters();
+    }
 
     /* ── Reports Section ─────────────────────── */
     function buildBar(label, value, total, color) {
@@ -642,7 +750,6 @@ document.addEventListener('DOMContentLoaded', () => {
         settingsAuthModal.classList.add('show');
         setTimeout(() => settingsPassword.focus(), 100);
 
-        // one-time submit handler
         const submit = document.getElementById('settingsAuthSubmit');
         const newSubmit = submit.cloneNode(true);
         submit.parentNode.replaceChild(newSubmit, submit);
@@ -678,7 +785,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === settingsAuthModal) settingsAuthModal.classList.remove('show');
     });
 
-    /* Bind sidebar navigation with settings auth check */
+    /* Sidebar navigation with settings auth check */
     document.querySelectorAll('.sidebar-menu a[data-section]').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
@@ -691,7 +798,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    /* Settings save/reset buttons require auth */
     document.getElementById('btnSettingsSave')?.addEventListener('click', () => {
         if (!settingsUnlocked) {
             openSettingsAuth(() => showToast(I18N.get('settings.save.ok'), 'success'));
@@ -748,12 +854,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ── CSV Export ─────────────────────────── */
     document.getElementById('btnExportCSV').addEventListener('click', () => {
-        const headers = ['Status','Tag ID','MAC','Name','Breed','Type','Gender','Age(mo)','Temp(°C)','Lat','Lng'];
+        const headers = ['Status','Tag ID','MAC','Name','Breed','Type','Gender','Age(mo)','Temp(°C)','Lat','Lng','Processed'];
         const rows = cowsData.map(c => [
-            c.status, c.id, c.mac, c.name, I18N.get('breed.' + c.breedKey), c.typeKey, c.gender, c.age, c.temp, c.lat.toFixed(5), c.lng.toFixed(5)
+            c.status, c.id, c.mac, c.name, I18N.get('breed.' + c.breedKey), c.typeKey, c.gender, c.age, c.temp, c.lat.toFixed(5), c.lng.toFixed(5),
+            isProcessed(c.id) ? 'Y' : 'N'
         ]);
         const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
-        const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' }); // BOM for Excel Korean
+        const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
         const url  = URL.createObjectURL(blob);
         const a    = Object.assign(document.createElement('a'), { href: url, download: `bovicare_${ranchName}_${Date.now()}.csv` });
         a.click();
@@ -770,9 +877,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isEmpty) {
             buildAlertRows([]);
         } else {
-            buildAlertRows(allAlerts);
-            updateAlertCount(allAlerts.length);
+            buildAlertRows(currentAlertList);
         }
+        buildMapMarkers();
         buildReports();
         renderUsers();
         document.getElementById('mapCowCount').querySelector('span').textContent =
