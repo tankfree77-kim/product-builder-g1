@@ -29,7 +29,7 @@ const I18N = {
       'iot.status.urgent' : 'URGENT!',
       'iot.status.estrus' : 'ESTRUS',
       'iot.base.range'    : '2.4km 범위',
-      'iot.cloud.status'  : '실시간 분석 중',
+      'iot.cloud.status'  : '소 상태 및 위치 실시간 분석 중',
       'iot.mobile.sub'    : '긴급 알림',
       'iot.tablet.sub'    : '대시보드',
 
@@ -374,7 +374,7 @@ const I18N = {
       'iot.status.urgent' : 'URGENT!',
       'iot.status.estrus' : 'ESTRUS',
       'iot.base.range'    : '2.4km Range',
-      'iot.cloud.status'  : 'Analyzing Real-time',
+      'iot.cloud.status'  : 'Cattle Status & Location Live Analysis',
       'iot.mobile.sub'    : 'Urgent Alerts',
       'iot.tablet.sub'    : 'Dashboard',
 
@@ -674,7 +674,7 @@ const I18N = {
       'iot.status.urgent' : '¡URGENTE!',
       'iot.status.estrus' : 'ESTRO',
       'iot.base.range'    : 'Rango 2.4km',
-      'iot.cloud.status'  : 'Analizando...',
+      'iot.cloud.status'  : 'Análisis de estado y ubicación en vivo',
       'iot.mobile.sub'    : 'Alerta Urgente',
       'iot.tablet.sub'    : 'Panel',
 
@@ -974,7 +974,7 @@ const I18N = {
       'iot.status.urgent' : '緊急!',
       'iot.status.estrus' : '発情',
       'iot.base.range'    : '2.4km 範囲',
-      'iot.cloud.status'  : 'リアルタイム分析中',
+      'iot.cloud.status'  : '牛の状態・位置をリアルタイム分析中',
       'iot.mobile.sub'    : '緊急通知',
       'iot.tablet.sub'    : 'ダッシュボード',
 
@@ -1277,7 +1277,7 @@ const I18N = {
       'iot.status.urgent' : '紧急!',
       'iot.status.estrus' : '发情期',
       'iot.base.range'    : '2.4km范围',
-      'iot.cloud.status'  : '实时分析中',
+      'iot.cloud.status'  : '牛只状态与位置实时分析中',
       'iot.mobile.sub'    : '紧急提醒',
       'iot.tablet.sub'    : '仪表板',
 

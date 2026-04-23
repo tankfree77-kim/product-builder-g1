@@ -228,12 +228,39 @@ section .section-label { display: block; text-align: center; }
     color: #065f46;
 }
 
-/* ── IoT Diagram Image ── */
+/* ── IoT Diagram Image + Overlay ── */
+.iot-img-wrap {
+    position: relative;
+    line-height: 0;
+}
 .iot-full-img {
     width: 100%;
     display: block;
     border-radius: 20px;
 }
+.iot-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: 20px;
+}
+
+/* Translatable card sub-texts */
+.iol-card {
+    position: absolute;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    color: rgba(195, 220, 215, 0.90);
+    background: rgba(8, 22, 20, 0.72);
+    padding: 0.07rem 0.38rem;
+    border-radius: 4px;
+}
+.iol-base   { top: 48.5%; left: 17.5%; }
+.iol-cloud  { top: 66.2%; left: 17.5%; }
+.iol-mobile { top: 90.5%; left: 25%;   transform: translateX(-50%); }
+.iol-tablet { top: 90.5%; left: 75%;   transform: translateX(-50%); }
 
 /* Card header bar */
 .iot-card-header {
