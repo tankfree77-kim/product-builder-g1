@@ -255,10 +255,10 @@ section .section-label { display: block; text-align: center; }
     transform: translateX(-50%);
     text-shadow: 0 1px 4px rgba(0,0,0,0.95), 0 0 8px rgba(0,0,0,0.8);
 }
-.iol-normal { top: 25%; left: 10%;  color: #4ade80; }
-.iol-heat   { top: 25%; left: 32%;  color: #fb923c; }
-.iol-urgent { top: 25%; left: 56%;  color: #f87171; }
-.iol-estrus { top: 25%; left: 80%;  color: #e879f9; }
+.iol-normal { top: 25%; left: 15%;  color: #4ade80; }
+.iol-heat   { top: 25%; left: 37%;  color: #fb923c; }
+.iol-urgent { top: 25%; left: 61%;  color: #f87171; }
+.iol-estrus { top: 25%; left: 85%;  color: #e879f9; }
 
 /* Translatable card sub-texts */
 .iol-card {
