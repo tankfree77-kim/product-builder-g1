@@ -255,10 +255,10 @@ section .section-label { display: block; text-align: center; }
     transform: translateX(-50%);
     text-shadow: 0 1px 4px rgba(0,0,0,0.95), 0 0 8px rgba(0,0,0,0.8);
 }
-.iol-normal { top: 25%; left: 10%;  color: #4ade80; }
-.iol-heat   { top: 25%; left: 32%;  color: #fb923c; }
-.iol-urgent { top: 25%; left: 56%;  color: #f87171; }
-.iol-estrus { top: 25%; left: 80%;  color: #e879f9; }
+.iol-normal { top: 25%; left: 20%;  color: #4ade80; }
+.iol-heat   { top: 25%; left: 42%;  color: #fb923c; }
+.iol-urgent { top: 25%; left: 66%;  color: #f87171; }
+.iol-estrus { top: 25%; left: 90%;  color: #e879f9; }
 
 /* Translatable card sub-texts */
 .iol-card {
@@ -272,10 +272,10 @@ section .section-label { display: block; text-align: center; }
     padding: 0;
     text-shadow: 0 1px 4px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.7);
 }
-.iol-base   { top: 45%;  left: 27%; }
-.iol-cloud  { top: 65%;  left: 23%; }
-.iol-mobile { top: 91%;  left: 25%; transform: translateX(-50%); }
-.iol-tablet { top: 91%;  left: 75%; transform: translateX(-50%); }
+.iol-base   { top: 45%;  left: 39%; }
+.iol-cloud  { top: 58%;  left: 23%; }
+.iol-mobile { top: 91%;  left: 29%; transform: translateX(-50%); }
+.iol-tablet { top: 91%;  left: 71%; transform: translateX(-50%); }
 
 /* Card header bar */
 .iot-card-header {
