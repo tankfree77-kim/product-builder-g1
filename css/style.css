@@ -248,14 +248,14 @@ section .section-label { display: block; text-align: center; }
 /* Translatable card sub-texts */
 .iol-card {
     position: absolute;
-    font-size: 0.72rem;
-    font-weight: 500;
+    font-size: 0.75rem;
+    font-weight: 600;
     letter-spacing: 0.01em;
     white-space: nowrap;
-    color: rgba(195, 220, 215, 0.90);
-    background: rgba(8, 22, 20, 0.72);
-    padding: 0.07rem 0.38rem;
-    border-radius: 4px;
+    color: #FFE066;
+    background: none;
+    padding: 0;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.7);
 }
 .iol-base   { top: 48.5%; left: 17.5%; }
 .iol-cloud  { top: 66.2%; left: 17.5%; }
