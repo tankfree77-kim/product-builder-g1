@@ -255,10 +255,10 @@ section .section-label { display: block; text-align: center; }
     transform: translateX(-50%);
     text-shadow: 0 1px 4px rgba(0,0,0,0.95), 0 0 8px rgba(0,0,0,0.8);
 }
-.iol-normal { top: 34%; left: 10%;  color: #4ade80; }
-.iol-heat   { top: 34%; left: 33%;  color: #fb923c; }
-.iol-urgent { top: 34%; left: 57%;  color: #f87171; }
-.iol-estrus { top: 34%; left: 81%;  color: #e879f9; }
+.iol-normal { top: 30%; left: 10%;  color: #4ade80; }
+.iol-heat   { top: 30%; left: 33%;  color: #fb923c; }
+.iol-urgent { top: 30%; left: 57%;  color: #f87171; }
+.iol-estrus { top: 30%; left: 81%;  color: #e879f9; }
 
 /* Translatable card sub-texts */
 .iol-card {
@@ -267,15 +267,15 @@ section .section-label { display: block; text-align: center; }
     font-weight: 600;
     letter-spacing: 0.01em;
     white-space: nowrap;
-    color: #FFE066;
+    color: rgba(200, 218, 222, 0.92);
     background: none;
     padding: 0;
     text-shadow: 0 1px 4px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.7);
 }
-.iol-base   { top: 49.5%; left: 22%; }
+.iol-base   { top: 47.5%; left: 23%; }
 .iol-cloud  { top: 61%;   left: 13%; }
-.iol-mobile { top: 89%;   left: 25%; transform: translateX(-50%); }
-.iol-tablet { top: 89%;   left: 75%; transform: translateX(-50%); }
+.iol-mobile { top: 88%;   left: 25%; transform: translateX(-50%); }
+.iol-tablet { top: 88%;   left: 75%; transform: translateX(-50%); }
 
 /* Card header bar */
 .iot-card-header {
