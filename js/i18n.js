@@ -353,6 +353,16 @@ const I18N = {
       'settings.timeout.30m'     : '30분',
       'settings.timeout.1h'      : '1시간',
       'settings.timeout.4h'      : '4시간',
+
+      /* UI Misc */
+      'table.total'        : '총',
+      'geo.tooltip'        : '목장 Geofence 경계',
+      'geo.tooltip.edited' : '목장 Geofence 경계 (수정됨)',
+      'geo.btn.edit'       : 'Geofence 편집',
+      'geo.btn.cancel'     : '편집 취소',
+      'geo.saved'          : 'Geofence가 저장되었습니다.',
+      'user.edit.wip'      : '사용자 편집 기능은 준비 중입니다.',
+      'csv.downloaded'     : 'CSV 파일이 다운로드되었습니다.',
     },
 
     /* ────────── English ────────── */
@@ -653,6 +663,16 @@ const I18N = {
       'settings.timeout.30m'     : '30 min',
       'settings.timeout.1h'      : '1 hour',
       'settings.timeout.4h'      : '4 hours',
+
+      /* UI Misc */
+      'table.total'        : 'Total',
+      'geo.tooltip'        : 'Farm Geofence Boundary',
+      'geo.tooltip.edited' : 'Farm Geofence Boundary (Modified)',
+      'geo.btn.edit'       : 'Edit Geofence',
+      'geo.btn.cancel'     : 'Cancel Edit',
+      'geo.saved'          : 'Geofence saved.',
+      'user.edit.wip'      : 'User editing coming soon.',
+      'csv.downloaded'     : 'CSV file downloaded.',
     },
 
     /* ────────── Español ────────── */
@@ -953,6 +973,16 @@ const I18N = {
       'settings.timeout.30m'     : '30 min',
       'settings.timeout.1h'      : '1 hora',
       'settings.timeout.4h'      : '4 horas',
+
+      /* UI Misc */
+      'table.total'        : 'Total',
+      'geo.tooltip'        : 'Límite Geovalla',
+      'geo.tooltip.edited' : 'Límite Geovalla (Modificado)',
+      'geo.btn.edit'       : 'Editar Geovalla',
+      'geo.btn.cancel'     : 'Cancelar',
+      'geo.saved'          : 'Geovalla guardada.',
+      'user.edit.wip'      : 'Edición de usuarios próximamente.',
+      'csv.downloaded'     : 'Archivo CSV descargado.',
     },
 
     /* ────────── 日本語 ────────── */
@@ -1253,6 +1283,16 @@ const I18N = {
       'settings.timeout.30m'     : '30分',
       'settings.timeout.1h'      : '1時間',
       'settings.timeout.4h'      : '4時間',
+
+      /* UI Misc */
+      'table.total'        : '計',
+      'geo.tooltip'        : '農場ジオフェンス境界',
+      'geo.tooltip.edited' : '農場ジオフェンス境界（修正済）',
+      'geo.btn.edit'       : 'ジオフェンス編集',
+      'geo.btn.cancel'     : '編集キャンセル',
+      'geo.saved'          : 'ジオフェンスが保存されました。',
+      'user.edit.wip'      : 'ユーザー編集機能は準備中です。',
+      'csv.downloaded'     : 'CSVファイルをダウンロードしました。',
     },
 
     /* ────────── 中文（简体） ────────── */
@@ -1601,6 +1641,16 @@ const I18N = {
       'settings.timeout.30m'     : '30分钟',
       'settings.timeout.1h'      : '1小时',
       'settings.timeout.4h'      : '4小时',
+
+      /* UI Misc */
+      'table.total'        : '共',
+      'geo.tooltip'        : '牧场地理围栏边界',
+      'geo.tooltip.edited' : '牧场地理围栏边界（已修改）',
+      'geo.btn.edit'       : '编辑地理围栏',
+      'geo.btn.cancel'     : '取消编辑',
+      'geo.saved'          : '地理围栏已保存。',
+      'user.edit.wip'      : '用户编辑功能即将推出。',
+      'csv.downloaded'     : 'CSV文件已下载。',
     },
   },
 

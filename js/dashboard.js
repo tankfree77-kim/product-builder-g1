@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
         color: '#0D8ABC', weight: 2.5,
         fillColor: '#0D8ABC', fillOpacity: 0.08, dashArray: '6, 8',
     }).addTo(map);
-    geofenceLayer.bindTooltip('목장 Geofence 경계', { permanent: false, direction: 'top' });
+    geofenceLayer.bindTooltip(I18N.get('geo.tooltip'), { permanent: false, direction: 'top' });
 
     const drawnItems = new L.FeatureGroup().addTo(map);
     const drawControl = new L.Control.Draw({
@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
             map.removeLayer(geofenceLayer);
             document.getElementById('geofence-status-bar').style.display = 'flex';
             document.getElementById('btnGeofenceSave').style.display     = 'inline-flex';
-            document.getElementById('btnGeofenceEdit').innerHTML = '<i class="fa-solid fa-xmark"></i> 편집 취소';
+            document.getElementById('btnGeofenceEdit').innerHTML = '<i class="fa-solid fa-xmark"></i> ' + I18N.get('geo.btn.cancel');
         } else {
             cancelEdit();
         }
@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
         geofenceLayer.addTo(map);
         document.getElementById('geofence-status-bar').style.display = 'none';
         document.getElementById('btnGeofenceSave').style.display     = 'none';
-        document.getElementById('btnGeofenceEdit').innerHTML = '<i class="fa-solid fa-draw-polygon"></i> Geofence 편집';
+        document.getElementById('btnGeofenceEdit').innerHTML = '<i class="fa-solid fa-draw-polygon"></i> ' + I18N.get('geo.btn.edit');
     }
 
     document.getElementById('btnGeofenceSave').addEventListener('click', () => {
@@ -259,10 +259,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 color: '#0D8ABC', weight: 2.5,
                 fillColor: '#0D8ABC', fillOpacity: 0.08, dashArray: '6, 8',
             }).addTo(map);
-            geofenceLayer.bindTooltip('목장 Geofence 경계 (수정됨)', { permanent: false, direction: 'top' });
+            geofenceLayer.bindTooltip(I18N.get('geo.tooltip.edited'), { permanent: false, direction: 'top' });
         }
         cancelEdit();
-        showToast('Geofence가 저장되었습니다.', 'success');
+        showToast(I18N.get('geo.saved'), 'success');
     });
 
     map.on(L.Draw.Event.CREATED, (e) => {
@@ -844,7 +844,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="text-gray" style="font-size:0.875rem;">${I18N.get(u.timeKey)}</td>
                 <td><span class="status-pill ${u.active ? 'green' : ''}" style="${!u.active?'background:#f3f4f6;color:#9ca3af;':''}">${u.active ? I18N.get('users.active') : I18N.get('users.inactive')}</span></td>
                 <td>
-                    <button class="btn-outline btn-sm" onclick="showToastGlobal('사용자 편집 기능은 준비 중입니다.','info')">
+                    <button class="btn-outline btn-sm" onclick="showToastGlobal(I18N.get('user.edit.wip'),'info')">
                         <i class="fa-solid fa-pen"></i>
                     </button>
                 </td>
@@ -865,7 +865,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const a    = Object.assign(document.createElement('a'), { href: url, download: `bovicare_${ranchName}_${Date.now()}.csv` });
         a.click();
         URL.revokeObjectURL(url);
-        showToast('CSV 파일이 다운로드되었습니다.', 'success');
+        showToast(I18N.get('csv.downloaded'), 'success');
     });
 
     /* ── Language Change: re-render dynamic content ── */
@@ -885,6 +885,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('mapCowCount').querySelector('span').textContent =
             I18N.get('map.count').replace('{n}', TOTAL);
         updateTime();
+        geofenceLayer.unbindTooltip();
+        geofenceLayer.bindTooltip(I18N.get('geo.tooltip'), { permanent: false, direction: 'top' });
+        if (editMode) {
+            document.getElementById('btnGeofenceEdit').innerHTML = '<i class="fa-solid fa-xmark"></i> ' + I18N.get('geo.btn.cancel');
+        }
     });
 
     /* ── Toast Notification ─────────────────── */
