@@ -1213,6 +1213,25 @@ function isPointInPolygon(point, vs) {
     return inside;
 }
 
+// Centroid of a simple polygon (falls back to vertex average for degenerate shapes)
+function polygonCentroid(polygon) {
+    let area = 0, cx = 0, cy = 0;
+    const n = polygon.length;
+    for (let i = 0; i < n; i++) {
+        const p1 = polygon[i];
+        const p2 = polygon[(i + 1) % n];
+        const cross = p1.x * p2.y - p2.x * p1.y;
+        area += cross;
+        cx += (p1.x + p2.x) * cross;
+        cy += (p1.y + p2.y) * cross;
+    }
+    area *= 0.5;
+    if (Math.abs(area) < 1e-6) {
+        return polygon.reduce((acc, p) => ({ x: acc.x + p.x / n, y: acc.y + p.y / n }), { x: 0, y: 0 });
+    }
+    return { x: cx / (6 * area), y: cy / (6 * area) };
+}
+
 // Coordinate Calculation Logic
 btnOptimize.addEventListener('click', optimizeGrid);
 
@@ -1260,6 +1279,19 @@ function optimizeGrid() {
         const metersPerDegLat = 111000;
         const metersPerDegLon = 111000 * Math.cos(baseLat * Math.PI / 180);
 
+        const toLatLon = (x, y) => {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const dxMeters = (x - centerX) * mpp;
+            const dyMeters = (y - centerY) * mpp;
+            return {
+                lat: baseLat - (dyMeters / metersPerDegLat),
+                lon: baseLon + (dxMeters / metersPerDegLon)
+            };
+        };
+
+        let stationsAddedForPolygon = 0;
+
         for (let row = 0; minY + row * h < maxY + h; row++) {
             let y = minY + row * h;
             for (let col = 0; minX + col * w < maxX + w; col++) {
@@ -1268,37 +1300,47 @@ function optimizeGrid() {
                     x += w / 2;
                 }
                 if (isPointInPolygon({x,y}, polygon)) {
-                    
-                    // Calculate pseudo Lat/Lon offset from center of canvas 
-                    const centerX = canvas.width / 2;
-                    const centerY = canvas.height / 2;
-                    
-                    const dxMeters = (x - centerX) * mpp;
-                    const dyMeters = (y - centerY) * mpp; 
-                    
-                    const simLat = baseLat - (dyMeters / metersPerDegLat);
-                    const simLon = baseLon + (dxMeters / metersPerDegLon);
-                    
+
+                    const { lat: simLat, lon: simLon } = toLatLon(x, y);
                     const label = `${simLat.toFixed(5)}, ${simLon.toFixed(5)}`;
 
                     // Only add if it's not too close to a relay from a PREVIOUS polygon (prevent dupes in overlaps)
                     const isTooCloseToExisting = relayStations.some(rs => {
                         const dist = Math.sqrt(Math.pow(rs.x - x, 2) + Math.pow(rs.y - y, 2));
-                        return dist < rPx; 
+                        return dist < rPx;
                     });
-                    
+
                     if (!isTooCloseToExisting) {
                         relayStations.push({
                             id: relayStations.length + 1,
-                            x, 
-                            y, 
+                            x,
+                            y,
                             lat: simLat.toFixed(5),
                             lon: simLon.toFixed(5),
                             label
                         });
+                        stationsAddedForPolygon++;
                     }
                 }
             }
+        }
+
+        // Area smaller than the grid spacing (e.g. area < BS radius) can leave a
+        // polygon with zero stations. Guarantee at least one, placed at its center.
+        if (stationsAddedForPolygon === 0) {
+            let center = polygonCentroid(polygon);
+            if (!isPointInPolygon(center, polygon)) {
+                center = polygon.reduce((acc, p) => ({ x: acc.x + p.x / polygon.length, y: acc.y + p.y / polygon.length }), { x: 0, y: 0 });
+            }
+            const { lat: simLat, lon: simLon } = toLatLon(center.x, center.y);
+            relayStations.push({
+                id: relayStations.length + 1,
+                x: center.x,
+                y: center.y,
+                lat: simLat.toFixed(5),
+                lon: simLon.toFixed(5),
+                label: `${simLat.toFixed(5)}, ${simLon.toFixed(5)}`
+            });
         }
     });
 
