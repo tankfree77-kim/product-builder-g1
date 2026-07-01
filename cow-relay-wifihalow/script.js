@@ -275,6 +275,13 @@ function openMapSearchModal() {
         initializeGoogleMap();
     } else {
         google.maps.event.trigger(googleMap, 'resize');
+        if (currentDrawnPolygon) {
+            currentDrawnPolygon.setMap(null);
+            currentDrawnPolygon = null;
+        }
+        if (drawingManager) {
+            drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
+        }
     }
 }
 
