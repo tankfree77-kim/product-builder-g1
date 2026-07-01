@@ -258,6 +258,7 @@ let currentDrawnPolygon = null;
 let googleMapsReady = false;
 let placesAutocomplete = null;
 let isManualDrawing = false;
+let vertexMarkers = [];
 
 // Called by Google Maps API callback (set in script tag)
 function initGoogleMapAPI() {
@@ -281,6 +282,7 @@ function openMapSearchModal() {
     }
 
     stopManualDrawing();
+    clearVertexMarkers();
     if (currentDrawnPolygon) {
         currentDrawnPolygon.setMap(null);
         currentDrawnPolygon = null;
@@ -323,15 +325,37 @@ function initializeGoogleMap() {
     googleMap.addListener('click', (e) => {
         if (!isManualDrawing || !currentDrawnPolygon) return;
         currentDrawnPolygon.getPath().push(e.latLng);
+        vertexMarkers.push(new google.maps.Marker({
+            position: e.latLng,
+            map: googleMap,
+            icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 5,
+                fillColor: '#f59e0b',
+                fillOpacity: 1,
+                strokeColor: '#ffffff',
+                strokeWeight: 1.5
+            },
+            clickable: false
+        }));
     });
 
-    googleMap.addListener('rightclick', (e) => {
+    googleMap.addListener('rightclick', () => {
         if (!isManualDrawing || !currentDrawnPolygon) return;
         const path = currentDrawnPolygon.getPath();
         if (path.getLength() > 0) {
             path.removeAt(path.getLength() - 1);
         }
+        const lastMarker = vertexMarkers.pop();
+        if (lastMarker) {
+            lastMarker.setMap(null);
+        }
     });
+}
+
+function clearVertexMarkers() {
+    vertexMarkers.forEach(marker => marker.setMap(null));
+    vertexMarkers = [];
 }
 
 function startManualDrawing() {
@@ -339,8 +363,9 @@ function startManualDrawing() {
     if (currentDrawnPolygon) {
         currentDrawnPolygon.setMap(null);
     }
+    clearVertexMarkers();
     currentDrawnPolygon = new google.maps.Polygon({
-        paths: [],
+        paths: [[]],
         fillColor: '#f59e0b',
         fillOpacity: 0.25,
         strokeWeight: 2,
@@ -396,6 +421,7 @@ document.getElementById('btn-reset-drawing').addEventListener('click', () => {
     if (currentDrawnPolygon) {
         currentDrawnPolygon.getPath().clear();
     }
+    clearVertexMarkers();
 });
 
 // Close modal buttons
