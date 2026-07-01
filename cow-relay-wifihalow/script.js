@@ -52,16 +52,12 @@ const i18n = {
         alert_load_success: "데이터 불러오기 성공",
         alert_dist_error: "거리 설정이 잘못되었습니다.",
         btn_draw_finish: "그리기 완료",
-        modal_title: "지역 검색 및 영역 그리기",
+        modal_title: "지역 검색",
         modal_search_placeholder: "지역 검색 (예: 아순시온, 파라과이)",
         modal_btn_search: "검색",
-        modal_btn_start: "그리기 시작",
-        modal_btn_reset: "폴리곤 초기화",
-        modal_hint: "\"그리기 시작\" 버튼을 누른 후 지도를 좌클릭하여 폴리곤 꼭짓점을 추가하세요. 우클릭하면 마지막 꼭짓점이 하나씩 취소됩니다. 모두 지우려면 초기화, 완료되면 확정 버튼을 누르세요.",
+        modal_hint: "지역을 검색하고 원하는 위치로 지도를 이동/확대한 후 완료 버튼을 누르세요. 영역(폴리곤)은 메인 화면에서 그릴 수 있습니다.",
         modal_btn_cancel: "취소",
-        modal_btn_confirm: "폴리곤 확정",
-        alert_no_polygon: "먼저 지도에서 폴리곤을 그려주세요.",
-        alert_polygon_too_small: "유효한 폴리곤을 그려주세요. (꼭짓점이 3개 이상 필요합니다)",
+        modal_btn_apply: "완료",
         alert_maps_not_ready: "Google Maps API가 아직 로드되지 않았습니다. 잠시 후 다시 시도하세요."
     },
     en: {
@@ -99,16 +95,12 @@ const i18n = {
         alert_load_success: "Data loaded successfully",
         alert_dist_error: "Distance setting is invalid.",
         btn_draw_finish: "Finish Drawing",
-        modal_title: "Search Location & Draw Area",
+        modal_title: "Search Location",
         modal_search_placeholder: "Search location (e.g. Asuncion, Paraguay)",
         modal_btn_search: "Search",
-        modal_btn_start: "Start Drawing",
-        modal_btn_reset: "Reset Polygon",
-        modal_hint: "Press \"Start Drawing\" then left-click on the map to add polygon vertices. Right-click undoes the last vertex. Reset clears everything, Confirm finalizes.",
+        modal_hint: "Search a location and pan/zoom the map as needed, then press Done. You can draw the farm area (polygon) on the main screen.",
         modal_btn_cancel: "Cancel",
-        modal_btn_confirm: "Confirm Polygon",
-        alert_no_polygon: "Please draw a polygon on the map first.",
-        alert_polygon_too_small: "Please draw a valid polygon (at least 3 vertices required).",
+        modal_btn_apply: "Done",
         alert_maps_not_ready: "Google Maps API is not yet loaded. Please try again in a moment."
     },
     es: {
@@ -146,16 +138,12 @@ const i18n = {
         alert_load_success: "Datos cargados exitosamente",
         alert_dist_error: "La configuración de la distancia no es válida.",
         btn_draw_finish: "Terminar Dibujo",
-        modal_title: "Buscar Ubicación y Dibujar Área",
+        modal_title: "Buscar Ubicación",
         modal_search_placeholder: "Buscar ubicación (ej: Asunción, Paraguay)",
         modal_btn_search: "Buscar",
-        modal_btn_start: "Iniciar Dibujo",
-        modal_btn_reset: "Reiniciar Polígono",
-        modal_hint: "Presione \"Iniciar Dibujo\" y haga clic izquierdo en el mapa para agregar vértices. El clic derecho deshace el último vértice. Reiniciar borra todo, Confirmar finaliza.",
+        modal_hint: "Busque una ubicación y mueva/acerque el mapa según sea necesario, luego presione Listo. Puede dibujar el área (polígono) en la pantalla principal.",
         modal_btn_cancel: "Cancelar",
-        modal_btn_confirm: "Confirmar Polígono",
-        alert_no_polygon: "Por favor dibuje un polígono en el mapa primero.",
-        alert_polygon_too_small: "Por favor dibuje un polígono válido (se requieren al menos 3 vértices).",
+        modal_btn_apply: "Listo",
         alert_maps_not_ready: "La API de Google Maps aún no está cargada. Por favor intente de nuevo en un momento."
     }
 };
@@ -254,11 +242,8 @@ let isBackgroundMapVisible = false;
 // ─── Google Maps Modal ───────────────────────────────────────────────────────
 
 let googleMap = null;
-let currentDrawnPolygon = null;
 let googleMapsReady = false;
 let placesAutocomplete = null;
-let isManualDrawing = false;
-let vertexMarkers = [];
 
 // Called by Google Maps API callback (set in script tag)
 function initGoogleMapAPI() {
@@ -279,13 +264,6 @@ function openMapSearchModal() {
         initializeGoogleMap();
     } else {
         google.maps.event.trigger(googleMap, 'resize');
-    }
-
-    stopManualDrawing();
-    clearVertexMarkers();
-    if (currentDrawnPolygon) {
-        currentDrawnPolygon.setMap(null);
-        currentDrawnPolygon = null;
     }
 }
 
@@ -318,78 +296,7 @@ function initializeGoogleMap() {
             googleMap.setZoom(12);
         }
     });
-
-    // Manual polygon drawing: left-click adds a vertex, right-click undoes the last vertex.
-    // Replaces the built-in DrawingManager toolbar, which left the map stuck in pan mode
-    // whenever the modal was reopened after a polygon had already been completed.
-    googleMap.addListener('click', (e) => {
-        if (!isManualDrawing || !currentDrawnPolygon) return;
-        currentDrawnPolygon.getPath().push(e.latLng);
-        vertexMarkers.push(new google.maps.Marker({
-            position: e.latLng,
-            map: googleMap,
-            icon: {
-                path: google.maps.SymbolPath.CIRCLE,
-                scale: 5,
-                fillColor: '#f59e0b',
-                fillOpacity: 1,
-                strokeColor: '#ffffff',
-                strokeWeight: 1.5
-            },
-            clickable: false
-        }));
-    });
-
-    googleMap.addListener('rightclick', () => {
-        if (!isManualDrawing || !currentDrawnPolygon) return;
-        const path = currentDrawnPolygon.getPath();
-        if (path.getLength() > 0) {
-            path.removeAt(path.getLength() - 1);
-        }
-        const lastMarker = vertexMarkers.pop();
-        if (lastMarker) {
-            lastMarker.setMap(null);
-        }
-    });
 }
-
-function clearVertexMarkers() {
-    vertexMarkers.forEach(marker => marker.setMap(null));
-    vertexMarkers = [];
-}
-
-function startManualDrawing() {
-    if (!googleMap) return;
-    if (currentDrawnPolygon) {
-        currentDrawnPolygon.setMap(null);
-    }
-    clearVertexMarkers();
-    currentDrawnPolygon = new google.maps.Polygon({
-        paths: [[]],
-        fillColor: '#f59e0b',
-        fillOpacity: 0.25,
-        strokeWeight: 2,
-        strokeColor: '#f59e0b',
-        clickable: false,
-        editable: false,
-        draggable: false
-    });
-    currentDrawnPolygon.setMap(googleMap);
-    isManualDrawing = true;
-    googleMap.setOptions({ draggableCursor: 'crosshair' });
-}
-
-function stopManualDrawing() {
-    isManualDrawing = false;
-    if (googleMap) {
-        googleMap.setOptions({ draggableCursor: null });
-    }
-}
-
-document.getElementById('btn-start-drawing').addEventListener('click', () => {
-    if (!googleMap) return;
-    startManualDrawing();
-});
 
 // Manual geocode search (for users who don't pick from autocomplete dropdown)
 document.getElementById('btn-search-location').addEventListener('click', () => {
@@ -416,18 +323,9 @@ document.getElementById('location-search-input').addEventListener('keypress', (e
     }
 });
 
-// Clear all placed vertices without leaving drawing mode
-document.getElementById('btn-reset-drawing').addEventListener('click', () => {
-    if (currentDrawnPolygon) {
-        currentDrawnPolygon.getPath().clear();
-    }
-    clearVertexMarkers();
-});
-
 // Close modal buttons
 ['modal-close', 'btn-cancel-modal'].forEach(id => {
     document.getElementById(id).addEventListener('click', () => {
-        stopManualDrawing();
         document.getElementById('map-search-modal').style.display = 'none';
     });
 });
@@ -435,50 +333,39 @@ document.getElementById('btn-reset-drawing').addEventListener('click', () => {
 // Click outside modal to close
 document.getElementById('map-search-modal').addEventListener('click', (e) => {
     if (e.target === document.getElementById('map-search-modal')) {
-        stopManualDrawing();
         document.getElementById('map-search-modal').style.display = 'none';
     }
 });
 
-// Confirm polygon and convert to canvas coordinates
-document.getElementById('btn-confirm-polygon').addEventListener('click', () => {
-    if (!currentDrawnPolygon) {
-        alert(i18n[currentLang]['alert_no_polygon']);
+// Apply the current map viewport as the working area; the farm polygon itself
+// is drawn afterwards on the main screen (not inside this modal).
+document.getElementById('btn-apply-map').addEventListener('click', () => {
+    if (!googleMap) return;
+
+    const bounds = googleMap.getBounds();
+    if (!bounds) {
+        alert(i18n[currentLang]['alert_maps_not_ready']);
         return;
     }
 
-    const path = currentDrawnPolygon.getPath();
-    if (path.getLength() < 3) {
-        alert(i18n[currentLang]['alert_polygon_too_small']);
-        return;
-    }
+    const ne = bounds.getNorthEast();
+    const sw = bounds.getSouthWest();
+    const geoPoints = [
+        { lat: sw.lat(), lon: sw.lng() },
+        { lat: ne.lat(), lon: ne.lng() }
+    ];
 
-    const geoPoints = [];
-    let minLat = Infinity, maxLat = -Infinity;
-    let minLon = Infinity, maxLon = -Infinity;
-
-    for (let i = 0; i < path.getLength(); i++) {
-        const latLng = path.getAt(i);
-        const lat = latLng.lat();
-        const lon = latLng.lng();
-        geoPoints.push({ lat, lon });
-        if (lat < minLat) minLat = lat;
-        if (lat > maxLat) maxLat = lat;
-        if (lon < minLon) minLon = lon;
-        if (lon > maxLon) maxLon = lon;
-    }
-
-    stopManualDrawing();
     document.getElementById('map-search-modal').style.display = 'none';
-    processGeoPolygon(geoPoints, minLat, maxLat, minLon, maxLon);
+    processMapView(geoPoints, sw.lat(), ne.lat(), sw.lng(), ne.lng());
 });
 
 // Open modal from placeholder and toolbar buttons
 document.getElementById('btn-open-map-search-placeholder').addEventListener('click', openMapSearchModal);
 document.getElementById('btn-reupload-map').addEventListener('click', openMapSearchModal);
 
-// Convert confirmed Google Maps polygon to canvas coordinate system
-function processGeoPolygon(geoPoints, minLat, maxLat, minLon, maxLon) {
+// Set up the canvas coordinate system from the loaded map viewport.
+// The farm polygon is left empty here; the user draws it on the main screen.
+function processMapView(geoPoints, minLat, maxLat, minLon, maxLon) {
     const centerLat = (minLat + maxLat) / 2;
     const centerLon = (minLon + maxLon) / 2;
 
@@ -508,16 +395,9 @@ function processGeoPolygon(geoPoints, minLat, maxLat, minLon, maxLon) {
     inputScaleValue.value = (37.8 * mpp).toFixed(4);
     inputScaleUnit.value = "m";
 
-    kmlPolygon = geoPoints.map(p => {
-        const dxMeters = (p.lon - centerLon) * metersPerDegLon;
-        const dyMeters = (p.lat - centerLat) * metersPerDegLat;
-        return {
-            x: (canvas.width / 2) + (dxMeters * pixelsPerMeter),
-            y: (canvas.height / 2) - (dyMeters * pixelsPerMeter)
-        };
-    });
-
-    farmPolygons = kmlPolygon.length > 2 ? [[...kmlPolygon]] : [];
+    // No boundary is drawn yet at this point; the user draws farm polygons on the main screen.
+    kmlPolygon = [];
+    farmPolygons = [];
 
     imageObj = null;
     isMapReady = true;
@@ -527,7 +407,7 @@ function processGeoPolygon(geoPoints, minLat, maxLat, minLon, maxLon) {
     btnClearArea.disabled = false;
     btnZoomIn.disabled = false;
     btnZoomOut.disabled = false;
-    btnOptimize.disabled = farmPolygons.length === 0;
+    btnOptimize.disabled = true;
 
     zoomLevel = 1;
     panX = 0;
@@ -925,11 +805,22 @@ canvas.addEventListener('click', (e) => {
     }
 });
 
-// Right click for Dragging Base Stations (contextmenu event)
+// Right click: undo last polygon vertex while drawing, or drag base stations (contextmenu event)
 canvas.addEventListener('contextmenu', (e) => {
     e.preventDefault(); // Stop normal right click menu
-    if (!isMapReady || mode !== 'editing_bs') return;
-    
+    if (!isMapReady) return;
+
+    if (mode === 'drawing_polygon' && currentPolygonIndex >= 0) {
+        const poly = farmPolygons[currentPolygonIndex];
+        if (poly.length > 0) {
+            poly.pop();
+            draw();
+        }
+        return;
+    }
+
+    if (mode !== 'editing_bs') return;
+
     const rect = canvas.getBoundingClientRect();
     const x = (e.clientX - rect.left - panX) / zoomLevel;
     const y = (e.clientY - rect.top - panY) / zoomLevel;
