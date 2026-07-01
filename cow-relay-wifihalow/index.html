@@ -209,12 +209,13 @@
                 <input type="text" id="location-search-input" data-i18n-placeholder="modal_search_placeholder"
                     placeholder="지역 검색 (예: 아순시온, 파라과이)" />
                 <button id="btn-search-location" class="btn-primary" data-i18n="modal_btn_search">검색</button>
+                <button id="btn-start-drawing" class="btn-primary" data-i18n="modal_btn_start">그리기 시작</button>
                 <button id="btn-reset-drawing" class="btn-secondary" data-i18n="modal_btn_reset">폴리곤 초기화</button>
             </div>
             <div id="google-map-container"></div>
             <div class="modal-footer">
-                <p class="modal-hint" data-i18n="modal_hint">지도에서 폴리곤 꼭짓점을 클릭하여 영역을 지정하세요. 완료 후 확정 버튼을 누르세요. 폴리곤 꼭짓점은
-                    드래그로 수정 가능합니다.</p>
+                <p class="modal-hint" data-i18n="modal_hint">"그리기 시작" 버튼을 누른 후 지도를 좌클릭하여 폴리곤 꼭짓점을 추가하세요. 우클릭하면 마지막 꼭짓점이 하나씩
+                    취소됩니다. 모두 지우려면 초기화, 완료되면 확정 버튼을 누르세요.</p>
                 <div class="modal-actions">
                     <button id="btn-cancel-modal" class="btn-secondary" data-i18n="modal_btn_cancel">취소</button>
                     <button id="btn-confirm-polygon" class="btn-primary" data-i18n="modal_btn_confirm">폴리곤 확정</button>

@@ -55,8 +55,9 @@ const i18n = {
         modal_title: "지역 검색 및 영역 그리기",
         modal_search_placeholder: "지역 검색 (예: 아순시온, 파라과이)",
         modal_btn_search: "검색",
+        modal_btn_start: "그리기 시작",
         modal_btn_reset: "폴리곤 초기화",
-        modal_hint: "지도에서 폴리곤 꼭짓점을 클릭하여 영역을 지정하세요. 완료 후 확정 버튼을 누르세요. 폴리곤 꼭짓점은 드래그로 수정 가능합니다.",
+        modal_hint: "\"그리기 시작\" 버튼을 누른 후 지도를 좌클릭하여 폴리곤 꼭짓점을 추가하세요. 우클릭하면 마지막 꼭짓점이 하나씩 취소됩니다. 모두 지우려면 초기화, 완료되면 확정 버튼을 누르세요.",
         modal_btn_cancel: "취소",
         modal_btn_confirm: "폴리곤 확정",
         alert_no_polygon: "먼저 지도에서 폴리곤을 그려주세요.",
@@ -101,8 +102,9 @@ const i18n = {
         modal_title: "Search Location & Draw Area",
         modal_search_placeholder: "Search location (e.g. Asuncion, Paraguay)",
         modal_btn_search: "Search",
+        modal_btn_start: "Start Drawing",
         modal_btn_reset: "Reset Polygon",
-        modal_hint: "Click on the map to place polygon vertices. Press Confirm when done. Vertices can be dragged to edit.",
+        modal_hint: "Press \"Start Drawing\" then left-click on the map to add polygon vertices. Right-click undoes the last vertex. Reset clears everything, Confirm finalizes.",
         modal_btn_cancel: "Cancel",
         modal_btn_confirm: "Confirm Polygon",
         alert_no_polygon: "Please draw a polygon on the map first.",
@@ -147,8 +149,9 @@ const i18n = {
         modal_title: "Buscar Ubicación y Dibujar Área",
         modal_search_placeholder: "Buscar ubicación (ej: Asunción, Paraguay)",
         modal_btn_search: "Buscar",
+        modal_btn_start: "Iniciar Dibujo",
         modal_btn_reset: "Reiniciar Polígono",
-        modal_hint: "Haga clic en el mapa para colocar vértices del polígono. Presione Confirmar cuando termine. Los vértices se pueden arrastrar para editar.",
+        modal_hint: "Presione \"Iniciar Dibujo\" y haga clic izquierdo en el mapa para agregar vértices. El clic derecho deshace el último vértice. Reiniciar borra todo, Confirmar finaliza.",
         modal_btn_cancel: "Cancelar",
         modal_btn_confirm: "Confirmar Polígono",
         alert_no_polygon: "Por favor dibuje un polígono en el mapa primero.",
@@ -251,10 +254,10 @@ let isBackgroundMapVisible = false;
 // ─── Google Maps Modal ───────────────────────────────────────────────────────
 
 let googleMap = null;
-let drawingManager = null;
 let currentDrawnPolygon = null;
 let googleMapsReady = false;
 let placesAutocomplete = null;
+let isManualDrawing = false;
 
 // Called by Google Maps API callback (set in script tag)
 function initGoogleMapAPI() {
@@ -275,13 +278,12 @@ function openMapSearchModal() {
         initializeGoogleMap();
     } else {
         google.maps.event.trigger(googleMap, 'resize');
-        if (currentDrawnPolygon) {
-            currentDrawnPolygon.setMap(null);
-            currentDrawnPolygon = null;
-        }
-        if (drawingManager) {
-            drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
-        }
+    }
+
+    stopManualDrawing();
+    if (currentDrawnPolygon) {
+        currentDrawnPolygon.setMap(null);
+        currentDrawnPolygon = null;
     }
 }
 
@@ -315,33 +317,54 @@ function initializeGoogleMap() {
         }
     });
 
-    drawingManager = new google.maps.drawing.DrawingManager({
-        drawingMode: google.maps.drawing.OverlayType.POLYGON,
-        drawingControl: true,
-        drawingControlOptions: {
-            position: google.maps.ControlPosition.TOP_CENTER,
-            drawingModes: [google.maps.drawing.OverlayType.POLYGON]
-        },
-        polygonOptions: {
-            fillColor: '#f59e0b',
-            fillOpacity: 0.25,
-            strokeWeight: 2,
-            strokeColor: '#f59e0b',
-            editable: true,
-            draggable: false
-        }
+    // Manual polygon drawing: left-click adds a vertex, right-click undoes the last vertex.
+    // Replaces the built-in DrawingManager toolbar, which left the map stuck in pan mode
+    // whenever the modal was reopened after a polygon had already been completed.
+    googleMap.addListener('click', (e) => {
+        if (!isManualDrawing || !currentDrawnPolygon) return;
+        currentDrawnPolygon.getPath().push(e.latLng);
     });
 
-    drawingManager.setMap(googleMap);
-
-    google.maps.event.addListener(drawingManager, 'polygoncomplete', (polygon) => {
-        if (currentDrawnPolygon) {
-            currentDrawnPolygon.setMap(null);
+    googleMap.addListener('rightclick', (e) => {
+        if (!isManualDrawing || !currentDrawnPolygon) return;
+        const path = currentDrawnPolygon.getPath();
+        if (path.getLength() > 0) {
+            path.removeAt(path.getLength() - 1);
         }
-        currentDrawnPolygon = polygon;
-        drawingManager.setDrawingMode(null);
     });
 }
+
+function startManualDrawing() {
+    if (!googleMap) return;
+    if (currentDrawnPolygon) {
+        currentDrawnPolygon.setMap(null);
+    }
+    currentDrawnPolygon = new google.maps.Polygon({
+        paths: [],
+        fillColor: '#f59e0b',
+        fillOpacity: 0.25,
+        strokeWeight: 2,
+        strokeColor: '#f59e0b',
+        clickable: false,
+        editable: false,
+        draggable: false
+    });
+    currentDrawnPolygon.setMap(googleMap);
+    isManualDrawing = true;
+    googleMap.setOptions({ draggableCursor: 'crosshair' });
+}
+
+function stopManualDrawing() {
+    isManualDrawing = false;
+    if (googleMap) {
+        googleMap.setOptions({ draggableCursor: null });
+    }
+}
+
+document.getElementById('btn-start-drawing').addEventListener('click', () => {
+    if (!googleMap) return;
+    startManualDrawing();
+});
 
 // Manual geocode search (for users who don't pick from autocomplete dropdown)
 document.getElementById('btn-search-location').addEventListener('click', () => {
@@ -368,20 +391,17 @@ document.getElementById('location-search-input').addEventListener('keypress', (e
     }
 });
 
-// Reset the drawn polygon and re-enable drawing mode
+// Clear all placed vertices without leaving drawing mode
 document.getElementById('btn-reset-drawing').addEventListener('click', () => {
     if (currentDrawnPolygon) {
-        currentDrawnPolygon.setMap(null);
-        currentDrawnPolygon = null;
-    }
-    if (drawingManager) {
-        drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
+        currentDrawnPolygon.getPath().clear();
     }
 });
 
 // Close modal buttons
 ['modal-close', 'btn-cancel-modal'].forEach(id => {
     document.getElementById(id).addEventListener('click', () => {
+        stopManualDrawing();
         document.getElementById('map-search-modal').style.display = 'none';
     });
 });
@@ -389,6 +409,7 @@ document.getElementById('btn-reset-drawing').addEventListener('click', () => {
 // Click outside modal to close
 document.getElementById('map-search-modal').addEventListener('click', (e) => {
     if (e.target === document.getElementById('map-search-modal')) {
+        stopManualDrawing();
         document.getElementById('map-search-modal').style.display = 'none';
     }
 });
@@ -421,6 +442,7 @@ document.getElementById('btn-confirm-polygon').addEventListener('click', () => {
         if (lon > maxLon) maxLon = lon;
     }
 
+    stopManualDrawing();
     document.getElementById('map-search-modal').style.display = 'none';
     processGeoPolygon(geoPoints, minLat, maxLat, minLon, maxLon);
 });
